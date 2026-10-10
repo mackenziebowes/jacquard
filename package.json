@@ -1,0 +1,30 @@
+{
+  "name": "jacquard",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "19",
+    "@types/react-dom": "19",
+    "react": "19",
+    "react-dom": "19"
+  },
+  "peerDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "1.1.0",
+    "agent-browser": "0.39.0"
+  },
+  "scripts": {
+    "jack": "bun bin/jack.ts",
+    "runs": "bun bin/runs.ts",
+    "test": "bun test test --timeout 90000",
+    "trace": "bun bin/trace.ts",
+    "turns": "bun bin/turns.ts",
+    "watch": "bun bin/jack-watch.ts"
+  },
+  "bin": {
+    "jack": "bin/jack.ts"
+  }
+}

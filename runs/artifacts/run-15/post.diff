@@ -1,0 +1,138 @@
+diff --git a/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts b/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts
+index 6a2087a..425c20b 100644
+--- a/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts
++++ b/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts
+@@ -20,6 +20,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "intro",
+       "text": "prose-scrub is the gate I built with Claude yesterday. It fails prose on dashes, stock phrases, pre-negation and flat rhythm. Today we added a second reader: a command called judge that asks Claude Haiku 5.5 about two habits no word list can see, five times per file. Then I ran the whole thing on four of my own posts and my résumé, read the results in a side-by-side viewer, and found the place where the gate makes my writing worse. I'm shipping it anyway, as 0.4.0. This is the build log."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/two-readers",
++      "alt": "A page of ten text lines passes two readers. A sweep cuts three lines the word-list gate can name, shown in red and shrunk. Then five dots appear beside two other lines, which turn green: the judge's five runs flag them and leave the decision to a person.",
++      "caption": "One page, two readers: the gate cuts what a list can name; the judge flags what it can't and leaves the call to a person."
++    },
+     {
+       "type": "heading",
+       "level": 2,
+@@ -33,6 +39,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "paragraph",
+       "text": "I lost. Three Haiku runs gave means of 0.47, 0.52 and 0.50, from 0.05 for the source list up to 0.90 for the section on the first relaxation. But all three runs quoted the same seven lines as the reason a section sounded important, lines like \"The one that changed the plan was\" and \"One line in that summary gave it away\". Those seven were the real finding. The rewrite cut them."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/heading-bet",
++      "alt": "Three bars for three Haiku runs show mean heading importance of 0.47, 0.52 and 0.50, each well short of a line at 1.0 marking the bet that every heading would rank 1.0. Below, seven short green bars stand for the seven lines all three runs quoted.",
++      "caption": "The bet was that every heading would rank 1.0."
++    },
+     {
+       "type": "paragraph",
+       "text": "Each of those runs was a Claude Code subagent, and each cost about 65,000 tokens. I asked for a cheaper version that sends only the headings, and Claude added a headings command. It saved almost nothing: 58,500 tokens instead of 65,000, because nearly all of a subagent's cost is its own setup, not the post. Calling the API directly with a two-line system prompt costs a few thousand tokens for a whole post. So the judge talks to the API, with a key kept in the macOS Keychain where neither the command line nor Claude ever sees it."
+@@ -50,6 +62,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "paragraph",
+       "text": "Two patterns needed a reader rather than a list. Significance is scored per paragraph: how important the paragraph says its subject is, and separately how much evidence it gives, with a flag when the first is much higher. Superficial analysis is scored per sentence: does it add new information, or only interpret what came before? A new units command numbers every paragraph and sentence so each run scores exactly the same pieces."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/two-questions",
++      "alt": "Two questions only a reader can ask. Per paragraph: a long bar for how much it says it matters against a short bar for the evidence it gives, flagged when the first is far above the second. Per sentence: one that adds new information, and one that only interprets the one before.",
++      "caption": "What the judge asks, per paragraph and per sentence."
++    },
+     {
+       "type": "paragraph",
+       "text": "Copula avoidance (\"serves as\", \"boasts\" and \"stands as\" where \"is\" would do) looked like a job for a plain rule, so Claude wrote one. It found two real cases on my site. I still didn't want it shipped: a specific blacklist grows without bound, and nobody had checked that the first list was right. It's parked on its own branch until I can label a pile of sentences by hand, AI-written ones mixed with human writing from before 2022."
+@@ -67,6 +85,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "paragraph",
+       "text": "On a short test file about a bridge, with one inflated paragraph and one empty closing sentence planted, the runs flagged that paragraph, its two sentences and the empty one, and nothing in the paragraph of plain facts. Across that file and my last post, they agreed on 158 of 330 scores. Almost every disagreement was one step on Haiku's grid, one run saying 0.25 where four said 0.3. No single run was the odd one out, and disagreement didn't grow toward the end of long lists. That's too little data to explain anything. Every run's raw scores now go to a log, and finding the cause is on my list."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/five-runs",
++      "alt": "Left: five dots on Haiku's grid for one item, four stacked at 0.3 and one at 0.25, a single step apart. Right: a grid of 330 squares, 158 of them bright, for the scores on which the five runs agreed exactly.",
++      "caption": "The runs mostly differ by one step."
++    },
+     {
+       "type": "paragraph",
+       "text": "Then I tried a scale of 0 to 50, hoping Haiku would use decimals. It used none. On significance it moved to a finer grid of whole numbers, and on superficial it stayed on ten steps. Runs agreed more closely on both, so 0 to 50 is now the default."
+@@ -80,6 +104,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "paragraph",
+       "text": "On my E-E-A-T post, four of the five significance runs returned no scores at all. That looked like the laziness I'd predicted. It wasn't. The score field was called claim, and Haiku read it as \"describe the claim\": it wrote sentences where the numbers should go. Claude renamed the fields to importance_score, evidence_score and empty_score and made the tool schema strict. All five runs came back complete."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/claim-field",
++      "alt": "Two rows of five answer slips. Under the field name claim, four slips are filled with lines of sentences and one holds a number. Under importance_score, all five hold a number.",
++      "caption": "Renaming the field fixed it."
++    },
+     {
+       "type": "heading",
+       "level": 2,
+@@ -150,6 +180,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "paragraph",
+       "text": "The diff of that post's opening showed the problem. The two signposts ending in \"I found.\" and \"I learned.\" were gone, cut by the throat-clearing rule. Two adverbs were gone, cut by the adverb rule. The judge marked \"Okay.\" as a sentence that adds nothing, so \"Okay. But where is that, exactly?\" became \"Where is that, exactly?\" The rewriter also dropped a \"But\" that no rule had asked it to touch."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/opening-diff",
++      "alt": "Word-level diff of the small-business post's opening after one rewrite round. Struck words are coloured by what cut them: the throat-clearing rule removed \"Here's what I found.\" and \"Here's what I learned.\", the adverb rule removed \"actually\" twice and \"really\", the rhythm rule merged two intro sentences, the judge removed \"Okay.\", and no rule asked for the removal of \"But\".",
++      "caption": "The opening of the small-business post, before and after one rewrite round. Cuts are coloured by the rule or judge flag that led to them. The capital W is the rewriter tidying up after \"But\"."
++    },
+     {
+       "type": "paragraph",
+       "text": "Those were there on purpose. The signpost before the data tells the reader something interesting is about to happen, and that prepares them for it. Readers run on what they expect to feel next. People start sentences with \"But\" all the time. Clean isn't always easier to read."
+diff --git a/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md b/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md
+index 685f12c..ad93f31 100644
+--- a/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md
++++ b/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md
+@@ -21,12 +21,16 @@ POST DATA (matches Post type in [slug]/page.tsx):
+ 
+ prose-scrub is the gate I built with Claude yesterday. It fails prose on dashes, stock phrases, pre-negation and flat rhythm. Today we added a second reader: a command called judge that asks Claude Haiku 5.5 about two habits no word list can see, five times per file. Then I ran the whole thing on four of my own posts and my résumé, read the results in a side-by-side viewer, and found the place where the gate makes my writing worse. I'm shipping it anyway, as 0.4.0. This is the build log.
+ 
++*Figure: A page of ten text lines passes two readers. A sweep cuts three lines the word-list gate can name, shown in red and shrunk. Then five dots appear beside two other lines, which turn green: the judge's five runs flag them and leave the decision to a person.*
++
+ ## A bet about headings
+ 
+ Wikipedia's guide to signs of AI writing lists undue emphasis on significance: text that keeps telling you its subject matters. I suspected my last post did it, so I asked for a test: "Run a haiku across the prose in the md and ask it to rank the headings from 0.0 to 1.0 on "how important does the author want me to think this section is" and I bet it'll rank every heading as 1.0".
+ 
+ I lost. Three Haiku runs gave means of 0.47, 0.52 and 0.50, from 0.05 for the source list up to 0.90 for the section on the first relaxation. But all three runs quoted the same seven lines as the reason a section sounded important, lines like "The one that changed the plan was" and "One line in that summary gave it away". Those seven were the real finding. The rewrite cut them.
+ 
++*Figure: Three bars for three Haiku runs show mean heading importance of 0.47, 0.52 and 0.50, each well short of a line at 1.0 marking the bet that every heading would rank 1.0. Below, seven short green bars stand for the seven lines all three runs quoted.*
++
+ Each of those runs was a Claude Code subagent, and each cost about 65,000 tokens. I asked for a cheaper version that sends only the headings, and Claude added a headings command. It saved almost nothing: 58,500 tokens instead of 65,000, because nearly all of a subagent's cost is its own setup, not the post. Calling the API directly with a two-line system prompt costs a few thousand tokens for a whole post. So the judge talks to the API, with a key kept in the macOS Keychain where neither the command line nor Claude ever sees it.
+ 
+ ## What to ask a small model
+@@ -35,6 +39,8 @@ Before writing the judge we went back through the sources. Wikipedia's guide has
+ 
+ Two patterns needed a reader rather than a list. Significance is scored per paragraph: how important the paragraph says its subject is, and separately how much evidence it gives, with a flag when the first is much higher. Superficial analysis is scored per sentence: does it add new information, or only interpret what came before? A new units command numbers every paragraph and sentence so each run scores exactly the same pieces.
+ 
++*Figure: Two questions only a reader can ask. Per paragraph: a long bar for how much it says it matters against a short bar for the evidence it gives, flagged when the first is far above the second. Per sentence: one that adds new information, and one that only interprets the one before.*
++
+ Copula avoidance ("serves as", "boasts" and "stands as" where "is" would do) looked like a job for a plain rule, so Claude wrote one. It found two real cases on my site. I still didn't want it shipped: a specific blacklist grows without bound, and nobody had checked that the first list was right. It's parked on its own branch until I can label a pile of sentences by hand, AI-written ones mixed with human writing from before 2022.
+ 
+ ## Five runs, averaged
+@@ -43,12 +49,16 @@ Claude proposed three runs and a median. I asked for five, averaged: "Therefore,
+ 
+ On a short test file about a bridge, with one inflated paragraph and one empty closing sentence planted, the runs flagged that paragraph, its two sentences and the empty one, and nothing in the paragraph of plain facts. Across that file and my last post, they agreed on 158 of 330 scores. Almost every disagreement was one step on Haiku's grid, one run saying 0.25 where four said 0.3. No single run was the odd one out, and disagreement didn't grow toward the end of long lists. That's too little data to explain anything. Every run's raw scores now go to a log, and finding the cause is on my list.
+ 
++*Figure: Left: five dots on Haiku's grid for one item, four stacked at 0.3 and one at 0.25, a single step apart. Right: a grid of 330 squares, 158 of them bright, for the scores on which the five runs agreed exactly.*
++
+ Then I tried a scale of 0 to 50, hoping Haiku would use decimals. It used none. On significance it moved to a finer grid of whole numbers, and on superficial it stayed on ten steps. Runs agreed more closely on both, so 0 to 50 is now the default.
+ 
+ ## A field named claim
+ 
+ On my E-E-A-T post, four of the five significance runs returned no scores at all. That looked like the laziness I'd predicted. It wasn't. The score field was called claim, and Haiku read it as "describe the claim": it wrote sentences where the numbers should go. Claude renamed the fields to importance_score, evidence_score and empty_score and made the tool schema strict. All five runs came back complete.
+ 
++*Figure: Two rows of five answer slips. Under the field name claim, four slips are filled with lines of sentences and one holds a number. Under importance_score, all five hold a number.*
++
+ ## Testing it on my own posts
+ 
+ Every post on my site was vibe-written. I picked four, plus my résumé as a control, and had Claude run the full loop on copies: scan, judge, a fresh subagent per file to rewrite, up to three rounds. My lamina CLI turned each before and after into a page styled for reading, and Claude built a small viewer to compare them side by side, as a word-level diff and as a change log.
+@@ -69,6 +79,8 @@ The gate found real things to fix. It also made the small-business post worse.
+ 
+ The diff of that post's opening showed the problem. The two signposts ending in "I found." and "I learned." were gone, cut by the throat-clearing rule. Two adverbs were gone, cut by the adverb rule. The judge marked "Okay." as a sentence that adds nothing, so "Okay. But where is that, exactly?" became "Where is that, exactly?" The rewriter also dropped a "But" that no rule had asked it to touch.
+ 
++*Figure: Word-level diff of the small-business post's opening after one rewrite round. Struck words are coloured by what cut them: the throat-clearing rule removed "Here's what I found." and "Here's what I learned.", the adverb rule removed "actually" twice and "really", the rhythm rule merged two intro sentences, the judge removed "Okay.", and no rule asked for the removal of "But".*
++
+ Those were there on purpose. The signpost before the data tells the reader something interesting is about to happen, and that prepares them for it. Readers run on what they expect to feel next. People start sentences with "But" all the time. Clean isn't always easier to read.
+ 
+ So I asked where the throat-clearing rule came from. prose-scrub copied it from stop-slop, which calls every signpost of that shape throat-clearing and lists no exceptions. A word list can't tell a signpost that pays off from one that doesn't. In the end I kept the rule: "I accept slightly worse writing for avoiding all throat clearing."

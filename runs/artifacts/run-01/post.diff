@@ -1,0 +1,30 @@
+diff --git a/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts b/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts
+index 6a2087a..2fd7aa5 100644
+--- a/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts
++++ b/client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts
+@@ -150,6 +150,12 @@ export const prose_scrub_0_4_a_small_model_as_second_reader: Post = {
+       "type": "paragraph",
+       "text": "The diff of that post's opening showed the problem. The two signposts ending in \"I found.\" and \"I learned.\" were gone, cut by the throat-clearing rule. Two adverbs were gone, cut by the adverb rule. The judge marked \"Okay.\" as a sentence that adds nothing, so \"Okay. But where is that, exactly?\" became \"Where is that, exactly?\" The rewriter also dropped a \"But\" that no rule had asked it to touch."
+     },
++    {
++      "type": "explainer",
++      "id": "prose-scrub-0-4-a-small-model-as-second-reader/opening-diff",
++      "alt": "The opening of the small-business post as a word-level diff. Struck through and tagged: two \"actually\"s (adverb rule) and \"Here's what I found.\" and \"Here's what I learned.\" (throat-clearing rule), all from the word list; \"Okay.\" (the judge); and \"But\", which no rule asked for. One phrase was rewritten into \"as opposed to where marketing blogs say they are\".",
++      "caption": "The opening before and after the rewrite. Each cut is tagged with what asked for it."
++    },
+     {
+       "type": "paragraph",
+       "text": "Those were there on purpose. The signpost before the data tells the reader something interesting is about to happen, and that prepares them for it. Readers run on what they expect to feel next. People start sentences with \"But\" all the time. Clean isn't always easier to read."
+diff --git a/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md b/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md
+index 685f12c..088dbad 100644
+--- a/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md
++++ b/client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md
+@@ -69,6 +69,8 @@ The gate found real things to fix. It also made the small-business post worse.
+ 
+ The diff of that post's opening showed the problem. The two signposts ending in "I found." and "I learned." were gone, cut by the throat-clearing rule. Two adverbs were gone, cut by the adverb rule. The judge marked "Okay." as a sentence that adds nothing, so "Okay. But where is that, exactly?" became "Where is that, exactly?" The rewriter also dropped a "But" that no rule had asked it to touch.
+ 
++*Figure: The opening of the small-business post as a word-level diff. Struck through and tagged: two "actually"s (adverb rule) and "Here's what I found." and "Here's what I learned." (throat-clearing rule), all from the word list; "Okay." (the judge); and "But", which no rule asked for. One phrase was rewritten into "as opposed to where marketing blogs say they are".*
++
+ Those were there on purpose. The signpost before the data tells the reader something interesting is about to happen, and that prepares them for it. Readers run on what they expect to feel next. People start sentences with "But" all the time. Clean isn't always easier to read.
+ 
+ So I asked where the throat-clearing rule came from. prose-scrub copied it from stop-slop, which calls every signpost of that shape throat-clearing and lists no exceptions. A word list can't tell a signpost that pays off from one that doesn't. In the end I kept the rule: "I accept slightly worse writing for avoiding all throat clearing."

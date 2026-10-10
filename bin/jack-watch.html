@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jacquard watch</title>
+<style>
+  :root { --bg: #0d0d0f; --panel: #16161a; --line: #2a2a30; --fg: #e8e6e1; --dim: #8b8a86; --live: #3ddc97; --err: #ff6b5b; --cost: #f0b45a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 13.5px/1.45 ui-sans-serif, system-ui, sans-serif; }
+  header { display: flex; gap: 16px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 2; flex-wrap: wrap; }
+  header h1 { font-size: 17px; margin: 0; letter-spacing: .08em; text-transform: uppercase; }
+  select, button { background: var(--panel); color: var(--fg); border: 1px solid var(--line); padding: 4px 8px; font: inherit; max-width: 100%; border-radius: 4px; }
+  button { cursor: pointer; }
+  button[aria-pressed="true"] { border-color: var(--dim); }
+  .totals { color: var(--dim); }
+  .totals b { color: var(--cost); font-weight: 600; }
+  .views { margin-left: auto; display: flex; gap: 6px; }
+
+  /* points: one per agent */
+  #overview { display: block; width: 100%; height: calc(100vh - 58px); }
+  .node circle.body { transition: r .6s ease-out; cursor: pointer; }
+  .node circle.ring { fill: none; stroke-width: 1; pointer-events: none; }
+  .node text { fill: var(--dim); font-size: 10.5px; text-anchor: middle; pointer-events: none; }
+  .spoke { stroke: var(--line); stroke-width: 1; }
+  #tip { position: fixed; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font-size: 10.5px; color: var(--dim); display: none; z-index: 5; max-width: 320px; }
+  #tip b { color: var(--fg); font-size: 13.5px; font-weight: 600; display: block; }
+
+  /* lanes: an agent's steps */
+  .lanes { display: flex; gap: 12px; padding: 12px 16px; overflow-x: auto; align-items: flex-start; }
+  .lane { flex: 0 0 380px; max-width: 92vw; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; display: flex; flex-direction: column; max-height: calc(100vh - 80px); }
+  .lanes.one .lane { flex: 1 1 auto; max-width: 900px; margin: 0 auto; }
+  .lane h2 { font-size: 13.5px; margin: 0; padding: 8px 10px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; align-items: center; }
+  .lane h2 .meta { margin-left: auto; color: var(--dim); font-weight: 400; font-size: 10.5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex: none; }
+  .dot.live { background: var(--live); }
+  .feed { overflow-y: auto; padding: 6px 10px 10px; }
+  .step { border-top: 1px solid var(--line); padding: 6px 0; }
+  .step:first-child { border-top: 0; }
+  .t { color: var(--dim); font-size: 10.5px; }
+  .say { white-space: pre-wrap; margin: 2px 0; }
+  .tool { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: #c9c6ff; word-break: break-word; white-space: pre-wrap; }
+  .tool .n { color: var(--live); }
+  .res { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: var(--dim); white-space: pre-wrap; word-break: break-word; max-height: 7.5em; overflow: hidden; }
+  .res.err { color: var(--err); }
+  .shot img { width: 100%; border: 1px solid var(--line); border-radius: 3px; cursor: zoom-in; margin-top: 4px; }
+  .lanes.one .shot img { max-width: 640px; }
+  .shot .lbl { color: var(--dim); font-size: 10.5px; }
+  #zoom { position: fixed; inset: 0; background: rgba(0,0,0,.9); display: none; align-items: center; justify-content: center; z-index: 9; cursor: zoom-out; }
+  #zoom img { max-width: 96vw; max-height: 96vh; }
+  .empty { color: var(--dim); padding: 24px 16px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Jacquard</h1>
+  <select id="runs" aria-label="Run"></select>
+  <span class="totals" id="totals"></span>
+  <span class="views">
+    <button id="back" hidden>← all agents</button>
+    <button id="v-points" aria-pressed="true">Points</button>
+    <button id="v-lanes" aria-pressed="false">All lanes</button>
+  </span>
+</header>
+<svg id="overview" viewBox="-500 -340 1000 680" aria-label="Agents in this run"></svg>
+<div class="lanes" id="lanes" hidden></div>
+<div id="tip"></div>
+<div id="zoom"></div>
+<script>
+const sessions = new Map(); // file -> { file, cwd, start, name, events, cost, turns, last, lastTurn, ctx }
+let selected = null, follow = true, view = "points", agentFile = null;
+const NS = "http://www.w3.org/2000/svg";
+
+const role = (s) => s.name.startsWith("sub:big-bro") ? "Big Bro" : s.name.startsWith("sub:little-bro") ? "Little Bro" : s.name.startsWith("sub:") ? s.name.slice(4) : "Main Guy";
+const colour = (r) => r === "Main Guy" ? "var(--fg)" : r === "Big Bro" ? "var(--cost)" : "var(--live)";
+const fmtT = (iso) => iso ? new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "";
+const k = (n) => n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : (n / 1e3).toFixed(0) + "k";
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function runsList() {
+  // a lead is any session not named sub:*; a sub belongs to the latest lead before it in the same cwd
+  const all = [...sessions.values()].sort((a, b) => a.start.localeCompare(b.start));
+  const runs = [];
+  for (const s of all) {
+    if (s.name.startsWith("sub:")) {
+      const lead = [...runs].reverse().find((r) => r.lead.cwd === s.cwd);
+      if (lead) { lead.subs.push(s); continue; }
+    }
+    runs.push({ lead: s, subs: [] });
+  }
+  return runs.reverse();
+}
+const currentRun = () => runsList().find((r) => r.lead.file === selected);
+const titled = (run) => { let n = 0; return [run.lead, ...run.subs].map((s) => ({ s, role: role(s), title: role(s) === "Little Bro" ? `Little Bro ${++n}` : role(s) })); };
+
+function apply(e, live) {
+  const s = sessions.get(e.file) ?? { file: e.file, cwd: "", start: e.at, name: "", events: [], cost: 0, turns: 0, last: 0, lastTurn: 0, ctx: 0 };
+  sessions.set(e.file, s);
+  if (e.kind === "session") { s.cwd = e.cwd; s.start = e.at; }
+  else if (e.kind === "name") s.name = e.name;
+  else {
+    s.events.push(e);
+    if (e.kind === "turn") { s.cost += e.cost; s.turns++; s.ctx = e.ctx ?? s.ctx; s.lastTurn = live ? performance.now() : 0; }
+  }
+  if (e.at) s.last = Math.max(s.last, Date.parse(e.at));
+}
+
+/* ---------- points ---------- */
+function layout(agents) {
+  // Main Guy in the middle; Big Bro straight up; Little Bros round the ring after it
+  const pos = new Map(), R = 230;
+  for (const a of agents) if (a.role === "Main Guy") pos.set(a.s.file, [0, 0]);
+  const ring = [...agents.filter((a) => a.role !== "Main Guy" && a.role !== "Little Bro"), ...agents.filter((a) => a.role === "Little Bro")];
+  ring.forEach((a, i) => { const ang = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(ring.length, 1); pos.set(a.s.file, [R * Math.cos(ang), R * 0.82 * Math.sin(ang)]); });
+  return pos;
+}
+const radius = (ctx) => Math.min(70, 7 + Math.sqrt(ctx || 0) / 14);
+
+function renderPoints() {
+  const svg = document.getElementById("overview"), run = currentRun();
+  if (!run) { svg.innerHTML = `<text x="0" y="0" fill="#8b8a86" text-anchor="middle">Waiting for sessions…</text>`; delete svg.dataset.run; return; }
+  const agents = titled(run), pos = layout(agents);
+  if (svg.dataset.run !== run.lead.file) { svg.innerHTML = ""; svg.dataset.run = run.lead.file; }
+  for (const a of agents) {
+    const id = "n-" + a.s.file.replace(/\W/g, "");
+    let g = svg.querySelector("#" + id);
+    const [x, y] = pos.get(a.s.file);
+    if (!g) {
+      if (a.role !== "Main Guy") { const l = document.createElementNS(NS, "line"); l.setAttribute("class", "spoke"); l.dataset.for = id; svg.prepend(l); }
+      g = document.createElementNS(NS, "g"); g.id = id; g.setAttribute("class", "node"); g.dataset.file = a.s.file;
+      g.innerHTML = `<circle class="ring"></circle><circle class="body"></circle><text></text>`;
+      svg.append(g);
+    }
+    const spoke = svg.querySelector(`line[data-for="${id}"]`);
+    if (spoke) { spoke.setAttribute("x1", 0); spoke.setAttribute("y1", 0); spoke.setAttribute("x2", x); spoke.setAttribute("y2", y); }
+    const r = radius(a.s.ctx), c = colour(a.role);
+    g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    const body = g.querySelector(".body"), ring = g.querySelector(".ring"), text = g.querySelector("text");
+    body.setAttribute("r", r.toFixed(1)); body.setAttribute("fill", c);
+    ring.setAttribute("r", (r + 6).toFixed(1)); ring.setAttribute("stroke", c);
+    text.setAttribute("y", (r + 18).toFixed(1)); text.textContent = a.role === "Main Guy" ? "Main Guy" : "";
+    g.dataset.title = a.title;
+  }
+}
+
+// brightness: a flare on each new turn that fades over a few seconds; recently active agents rest a little brighter
+function glow() {
+  const now = performance.now();
+  for (const g of document.querySelectorAll("#overview .node")) {
+    const s = sessions.get(g.dataset.file); if (!s) continue;
+    const flare = s.lastTurn ? Math.exp(-(now - s.lastTurn) / 2500) : 0, recent = Date.now() - s.last < 20000;
+    g.querySelector(".body").setAttribute("fill-opacity", (0.22 + (recent ? 0.25 : 0) + 0.53 * flare).toFixed(3));
+    g.querySelector(".ring").setAttribute("opacity", (0.12 + 0.6 * flare).toFixed(3));
+  }
+  requestAnimationFrame(glow);
+}
+requestAnimationFrame(glow);
+
+const tip = document.getElementById("tip"), overview = document.getElementById("overview");
+overview.addEventListener("mousemove", (e) => {
+  const g = e.target.closest(".node");
+  if (!g) { tip.style.display = "none"; return; }
+  const s = sessions.get(g.dataset.file);
+  const model = [...s.events].reverse().find((x) => x.model)?.model ?? "";
+  const lastSay = [...s.events].reverse().find((x) => x.kind === "turn" && x.text)?.text ?? "";
+  tip.innerHTML = `<b>${esc(g.dataset.title)}</b>${esc(model)} · ${s.turns} turns · $${s.cost.toFixed(2)} · context ${k(s.ctx)}${lastSay ? `<br>${esc(lastSay.slice(0, 160))}` : ""}`;
+  tip.style.display = "block";
+  tip.style.left = Math.min(e.clientX + 14, innerWidth - 330) + "px"; tip.style.top = e.clientY + 14 + "px";
+});
+overview.addEventListener("mouseleave", () => (tip.style.display = "none"));
+overview.addEventListener("click", (e) => {
+  const g = e.target.closest(".node"); if (!g) return;
+  agentFile = g.dataset.file; tip.style.display = "none"; setView("agent");
+});
+
+/* ---------- lanes ---------- */
+function stepHtml(e) {
+  if (e.kind === "turn") {
+    const tools = e.tools.map((t) => `<div class="tool"><span class="n">${esc(t.name)}</span> ${esc(t.brief)}</div>`).join("");
+    return `<div class="step"><div class="t">${fmtT(e.at)} · ${esc(e.model)} · $${e.cost.toFixed(3)} · context ${k(e.ctx ?? 0)}</div>${e.text ? `<div class="say">${esc(e.text)}</div>` : ""}${tools}</div>`;
+  }
+  if (e.kind === "result") {
+    const shots = e.images.map((src) => `<div class="shot"><div class="lbl">${esc(e.label)}</div><img loading="lazy" src="${src}" alt="${esc(e.label)}"></div>`).join("");
+    return `<div class="step">${e.text ? `<div class="res ${e.error ? "err" : ""}">${esc(e.text)}</div>` : ""}${shots}</div>`;
+  }
+  return "";
+}
+function renderLanes(only) {
+  const lanes = document.getElementById("lanes"), run = currentRun();
+  if (!run) { lanes.innerHTML = `<div class="empty">Waiting for sessions…</div>`; return; }
+  const agents = titled(run).filter((a) => !only || a.s.file === only);
+  lanes.classList.toggle("one", !!only);
+  const scrolls = new Map([...lanes.querySelectorAll(".feed")].map((f) => [f.dataset.file, f.scrollHeight - f.scrollTop - f.clientHeight < 40 ? "bottom" : f.scrollTop]));
+  lanes.innerHTML = agents.map(({ s, title }) => {
+    const model = [...s.events].reverse().find((e) => e.model)?.model ?? "";
+    return `<section class="lane"><h2><span class="dot ${Date.now() - s.last < 20000 ? "live" : ""}"></span>${esc(title)}<span class="meta">${esc(model)} · ${s.turns} turns · $${s.cost.toFixed(2)} · context ${k(s.ctx)}</span></h2><div class="feed" data-file="${esc(s.file)}">${s.events.map(stepHtml).join("")}</div></section>`;
+  }).join("");
+  for (const f of lanes.querySelectorAll(".feed")) { const v = scrolls.get(f.dataset.file); f.scrollTop = v === undefined || v === "bottom" ? f.scrollHeight : v; }
+}
+
+/* ---------- frame ---------- */
+function render() {
+  const runs = runsList(), sel = document.getElementById("runs");
+  sel.innerHTML = runs.map((r, i) => `<option value="${esc(r.lead.file)}">${esc(r.lead.name || r.lead.file.slice(0, 19))}${i === 0 ? " (latest)" : ""}</option>`).join("");
+  if (follow || !selected) selected = runs[0]?.lead.file ?? null;
+  if (selected) sel.value = selected;
+  const run = currentRun();
+  if (run) {
+    const agents = [run.lead, ...run.subs];
+    const live = agents.filter((s) => Date.now() - s.last < 20000).length;
+    document.getElementById("totals").innerHTML = `<b>$${agents.reduce((n, s) => n + s.cost, 0).toFixed(2)}</b> · ${agents.reduce((n, s) => n + s.turns, 0)} turns · ${agents.length} agents · ${live} active`;
+  }
+  if (view === "points") renderPoints();
+  else renderLanes(view === "agent" ? agentFile : null);
+}
+function setView(v) {
+  view = v;
+  overview.hidden = v !== "points";
+  document.getElementById("lanes").hidden = v === "points";
+  document.getElementById("back").hidden = v !== "agent";
+  document.getElementById("v-points").setAttribute("aria-pressed", v === "points");
+  document.getElementById("v-lanes").setAttribute("aria-pressed", v === "lanes");
+  render();
+}
+document.getElementById("v-points").onclick = () => setView("points");
+document.getElementById("v-lanes").onclick = () => setView("lanes");
+document.getElementById("back").onclick = () => setView("points");
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && view === "agent") setView("points"); });
+document.getElementById("runs").addEventListener("change", (e) => { selected = e.target.value; follow = false; setView(view === "agent" ? "points" : view); });
+document.addEventListener("click", (e) => {
+  const z = document.getElementById("zoom");
+  if (e.target.matches(".shot img")) { z.replaceChildren(Object.assign(document.createElement("img"), { src: e.target.src, alt: e.target.alt })); z.style.display = "flex"; }
+  else if (e.target.closest("#zoom")) z.style.display = "none";
+});
+
+let pending = false;
+const schedule = () => { if (!pending) { pending = true; requestAnimationFrame(() => { pending = false; render(); }); } };
+const es = new EventSource("/events");
+es.onmessage = (m) => { const e = JSON.parse(m.data); if (e.kind === "history") e.events.forEach((x) => apply(x, false)); else apply(e, true); schedule(); };
+setInterval(schedule, 5000);
+</script>
+</body>
+</html>

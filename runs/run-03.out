@@ -1,0 +1,19 @@
+I added a figure for the halftone paragraph in the Implementation section ("The halftone layer is the part that earned its place…"). I picked that paragraph because it's the hardest one in the post to picture, and the post's own claim is that it "earned its place". Typecheck passes, and I've looked at the figure on desktop and at 375px wide: no overflow and no console errors.
+
+**What it shows**
+- A crop of a made-up hill at true pixel scale, drawn in the mixed style. Thin contour lines are bunched together on the steep west side and spread out on the gentle east side. The two brighter contours each carry a band of orange dots on the 45-degree, 11 px dot screen. Dots are biggest on the line and shrink with distance, so the bands come out about the same width on both sides of the hill.
+- One dot is circled, with a dashed line to the nearest bright contour. A line below the map gives its distance and dot size in pixels. Pointing at any dot measures that one instead.
+- A toggle, "elevation ÷ slope (as built)" or "elevation only", shows why the code divides by the slope. Without it, the bands swell on gentle ground and thin out on steep ground. This "elevation only" view isn't something the generator does; the caption says it's there to show what the division is for.
+- A strip underneath shows dot size against distance using the post's numbers: 5 px on the line, too small to draw (under 0.7 px) past about 17 px, and the band's edge at 22 px.
+
+The hill is made up, and the caption says so. The screen, band width, size curve and 0.7 px cutoff all come from `synth/terrain.ts`.
+
+The first version made the page complain on load because the server and the browser rounded some dot sizes slightly differently. I now round all those numbers to two decimals, and the page loads without errors.
+
+**Files**
+- New: `client/components/explainers/generative-og-images-built-and-measured/HalftoneRibbon.tsx`
+- `client/components/explainers/registry.ts`: registered as `generative-og-images-built-and-measured/halftone-ribbon`
+- `client/content/posts/data/generative-og-images-built-and-measured.ts`: the figure block, with alt text and caption, sits right after the halftone paragraph
+- `client/public/posts/generative-og-images-built-and-measured.md`: the matching `*Figure: …*` line in the same place
+
+Nothing is committed.

@@ -1,0 +1,30 @@
+diff --git a/client/content/posts/data/where-small-business-owners-hang-out-online.ts b/client/content/posts/data/where-small-business-owners-hang-out-online.ts
+index 5710889..53efbfa 100644
+--- a/client/content/posts/data/where-small-business-owners-hang-out-online.ts
++++ b/client/content/posts/data/where-small-business-owners-hang-out-online.ts
+@@ -53,6 +53,12 @@ export const where_small_business_owners_hang_out_online: Post = {
+       type: "paragraph",
+       text: 'This created what the research calls a "utilitarian migration." The passive scrolling is over. Business owners are moving toward platforms that solve specific problems: finding workers, vetting tools, getting unfiltered advice, automating tasks they don\'t have time for.',
+     },
++    {
++      type: "explainer",
++      id: "where-small-business-owners-hang-out-online/minute-slots",
++      alt: "An owner stands at the left tossing coins, each one a minute, from a day of 2 h 9 min online, a little under the 141-minute average. The first two coins land on a scrolling feed, a conveyor belt of cards that carries them away toward the edge; nothing comes back, and this lane, labelled Scrolling, fades. The next four coins go into four slot machines labelled Solving, and each pays out one thing into its tray: a worker, a vetted tool, a speech bubble of advice and a gear for a task automated.",
++      caption: "Each coin is one minute. The times are from the post; the coin counts are illustrative.",
++    },
+     {
+       type: "paragraph",
+       text: "That was my first realization: they're not online for entertainment. They're online to work.",
+diff --git a/client/public/posts/where-small-business-owners-hang-out-online.md b/client/public/posts/where-small-business-owners-hang-out-online.md
+index ccd0051..45419f7 100644
+--- a/client/public/posts/where-small-business-owners-hang-out-online.md
++++ b/client/public/posts/where-small-business-owners-hang-out-online.md
+@@ -40,6 +40,8 @@ They don't have time to waste. Every minute online needs to return something - a
+ 
+ This created what the research calls a "utilitarian migration." The passive scrolling is over. Business owners are moving toward platforms that solve specific problems: finding workers, vetting tools, getting unfiltered advice, automating tasks they don't have time for.
+ 
++*Figure: An owner stands at the left tossing coins, each one a minute, from a day of 2 h 9 min online, a little under the 141-minute average. The first two coins land on a scrolling feed, a conveyor belt of cards that carries them away toward the edge; nothing comes back, and this lane, labelled Scrolling, fades. The next four coins go into four slot machines labelled Solving, and each pays out one thing into its tray: a worker, a vetted tool, a speech bubble of advice and a gear for a task automated.*
++
+ That was my first realization: they're not online for entertainment. They're online to work.
+ 
+ ---

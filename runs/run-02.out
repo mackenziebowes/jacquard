@@ -1,0 +1,13 @@
+I added a figure under that paragraph. It shows the small-business post's opening with the cuts struck through, each coloured by what removed it: the throat-clearing rule, the adverb rule, the judge, the rhythm rule, or no rule at all. The "But" that no rule asked for gets a dashed outline so it stands out. Words the rewriter added are underlined.
+
+The text comes from the real run in `~/dev/prose-scrub-review/2026-10-09/` (the before and after files plus its log of changes), not from the post's summary. The type check passes and the page shows no console errors. I looked at it on desktop and at 375px wide: it wraps cleanly with no sideways scrolling and uses the site's dark-theme colours.
+
+**One thing to check:** the real diff disagrees with the post. The paragraph says "Two adverbs were gone", but the run cut three in that opening: "actually" twice and "really" once. The figure shows all three, so either change "Two" to "Three" in the post or tell me to drop the intro's "actually" and "really" from the figure.
+
+Files:
+- `client/components/explainers/prose-scrub-0-4-a-small-model-as-second-reader/OpeningDiff.tsx` (new): the figure, built as styled text rather than SVG so it wraps on phones.
+- `client/components/explainers/registry.ts`: registered under `prose-scrub-0-4-a-small-model-as-second-reader/opening-diff`.
+- `client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts`: the figure block, with alt text and a caption, placed right after the paragraph.
+- `client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md`: the matching `*Figure: …*` line in the same place.
+
+Nothing is committed.

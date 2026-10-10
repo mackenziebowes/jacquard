@@ -1,0 +1,13 @@
+The post now has two figures. The first, **DraftSieve**, was already there from an earlier uncommitted session. I checked that it renders cleanly and left it alone. I added a second one, **CheckLoop**, that shows why the first one matters.
+
+- **What DraftSieve shows:** an agent pours 100 drafted boards onto a sieve of checks. 92 pile up on it and 8 fall through, which is HWE-Bench's best full pass rate of 8.15%.
+- **What CheckLoop shows:** the same hopper and sieve. A person labelled "You" stands at a laptop wired into the sieve. Boards the checks catch ride a dashed chute back up into the agent, and one is tagged "via almost on a pad", from the documented attempt the post describes. Below the sieve, a box labelled "first order" holds 5 boards with the label "5 boards from $2". It sits after the "trying is cheap" paragraph, so the figure carries both reasons the "Why bother" section gives.
+- **Kept to the post's strength:** the post never says the loop raises the pass rate, so the figure gives no improvement numbers. The caption says the heap and the chute are illustrative, not counts.
+
+**Files changed:**
+- `client/components/explainers/how-and-why-to-get-involved-with-vibe-manufacturing/CheckLoop.tsx` (new)
+- `client/components/explainers/registry.ts`: registered as `how-and-why-to-get-involved-with-vibe-manufacturing/check-loop`
+- `client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts`: explainer block with alt text and caption
+- `client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md`: the matching `*Figure: …*` line in the same place
+
+The type check (`tsc`) passes. I looked at the page at 375px and 1280px wide: there are no console errors, nothing overflows sideways on the phone width, and after shortening one label nothing overlaps. Nothing is committed.

@@ -1,0 +1,30 @@
+diff --git a/client/content/posts/data/where-small-business-owners-hang-out-online.ts b/client/content/posts/data/where-small-business-owners-hang-out-online.ts
+index 5710889..da80517 100644
+--- a/client/content/posts/data/where-small-business-owners-hang-out-online.ts
++++ b/client/content/posts/data/where-small-business-owners-hang-out-online.ts
+@@ -53,6 +53,12 @@ export const where_small_business_owners_hang_out_online: Post = {
+       type: "paragraph",
+       text: 'This created what the research calls a "utilitarian migration." The passive scrolling is over. Business owners are moving toward platforms that solve specific problems: finding workers, vetting tools, getting unfiltered advice, automating tasks they don\'t have time for.',
+     },
++    {
++      type: "explainer",
++      id: "where-small-business-owners-hang-out-online/leaving-the-feed",
++      alt: "Business owners, drawn as small figures, walk away from a phone showing an endless feed of posts, labelled passive scrolling. Footprints lead from the phone to four market stalls labelled find workers, vet tools, unfiltered advice and automate tasks, each with one owner at the counter. One faded figure stays by the phone, labelled some still scrolling.",
++      caption: "Owners are moving from the feed toward places that solve a specific problem. The even split is illustrative; the research doesn't give one.",
++    },
+     {
+       type: "paragraph",
+       text: "That was my first realization: they're not online for entertainment. They're online to work.",
+diff --git a/client/public/posts/where-small-business-owners-hang-out-online.md b/client/public/posts/where-small-business-owners-hang-out-online.md
+index ccd0051..f4424e3 100644
+--- a/client/public/posts/where-small-business-owners-hang-out-online.md
++++ b/client/public/posts/where-small-business-owners-hang-out-online.md
+@@ -40,6 +40,8 @@ They don't have time to waste. Every minute online needs to return something - a
+ 
+ This created what the research calls a "utilitarian migration." The passive scrolling is over. Business owners are moving toward platforms that solve specific problems: finding workers, vetting tools, getting unfiltered advice, automating tasks they don't have time for.
+ 
++*Figure: Business owners, drawn as small figures, walk away from a phone showing an endless feed of posts, labelled passive scrolling. Footprints lead from the phone to four market stalls labelled find workers, vet tools, unfiltered advice and automate tasks, each with one owner at the counter. One faded figure stays by the phone, labelled some still scrolling.*
++
+ That was my first realization: they're not online for entertainment. They're online to work.
+ 
+ ---

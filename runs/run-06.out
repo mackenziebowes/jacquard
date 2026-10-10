@@ -1,0 +1,13 @@
+I added one figure to the post. It sits right after the "utilitarian migration" paragraph, the passage the whole post builds on: owners aren't scrolling, they're solving problems. It builds without type errors, shows no console errors, and doesn't scroll sideways at 375px. I looked at it on a phone-width screen both mid-animation and when finished.
+
+**What it shows:** small figures in the site's accent colour walk away from a phone labelled "the feed / passive scrolling". Footprints lead to four market stalls, one for each problem the passage lists: find workers, vet tools, unfiltered advice, automate tasks. One faded figure stays by the phone, labelled "some still scrolling". I added that because the text says owners "are moving toward" these places, not that all of them have gone.
+
+**One thing to check:** the post gives no split between the four stalls, so each stall gets one owner. The caption says the even split is illustrative.
+
+**Animation:** the walk plays once, about 3 seconds, when the figure scrolls into view. Before that, and for anyone with reduced motion turned on, it shows the finished scene.
+
+**Files** (none committed):
+- `client/components/explainers/where-small-business-owners-hang-out-online/LeavingTheFeed.tsx` is the new figure. It uses the site's colour variables and is styled like the existing figures.
+- `client/components/explainers/registry.ts` registers it as `where-small-business-owners-hang-out-online/leaving-the-feed`.
+- `client/content/posts/data/where-small-business-owners-hang-out-online.ts` places the explainer block with its alt text and caption.
+- `client/public/posts/where-small-business-owners-hang-out-online.md` has the matching `*Figure: …*` line in the same place.

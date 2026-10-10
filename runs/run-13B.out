@@ -1,0 +1,23 @@
+All seven figures are on the page, with alt text, captions and the markdown twin lines filled in. `tsc` passes and none of the figures overflow at 375px. I looked at the hero and the last figure on the page at desktop width. I didn't re-check the other figures after wiring them in, and I haven't committed anything.
+
+One figure per heading, in one world: a desk with a page of grey text lines, a word-list gate, a small round reader (Haiku), a rewriter pen-bot and Mackenzie.
+
+| Figure | Placed after | Shows |
+|---|---|---|
+| `hero` | the intro | The gate snags bad lines and one good signpost. The rewriter cuts them all, and the reader's five-blink flags go to Mackenzie, not to the rewriter. |
+| `bet-on-headings` | "I lost. Three Haiku runs…" | Lamps expected at full glow middling. All three runs point at the same seven lines, and those get cut. |
+| `significance-beam` | "Two patterns needed a reader…" | A balance beam weighs "says it matters" against evidence, and flags the inflated paragraph. |
+| `five-runs` | "On a short test file about a bridge…" | Five marbles in a ruler's notches: four at 0.3 and one at 0.25, with the average marked. The ruler then swaps to the finer 0-50 one. |
+| `claim-field` | "On my E-E-A-T post…" | Four of five runs jam the slot tagged `claim`. After the rename, all five place a number. |
+| `test-on-my-posts` | "The gate found real things to fix…" | Piles of 9, 4, 1, 14 and 0 findings swept down to 0, 2, 0, 1. One good line goes into the bin with the litter. |
+| `clean-reads-worse` | "Those were there on purpose." | The reader walks a boardwalk made of the opening's words. The cuts leave a gap, and the reader stumbles. |
+
+I left out the token-cost paragraph, "Using it" and the sources. Big-bro said the cost idea could only be drawn as bar-chart-style stacks, and the other two have nothing to explain. I revised the plan on big-bro's review but didn't ask for a second round.
+
+- **Placeholder numbers:** The six heading lamps, the levels of the four lamps other than 0.05 and 0.90, and the 0-50 marble positions are placeholders. None is labelled as data.
+- **`claim-field` blinks:** The reader blinks ten times across the whole figure, because it replays the same five runs after the rename. If you want exactly five, that second pass should go.
+- **Hydration warning:** A console warning appears on the page. The hero builder says it also shows on `/posts` and `/research`, which have no figures, so I didn't chase it.
+- **Dev server:** It's running at `localhost:3102` if you want to look.
+- **Theme:** Only the dark theme was checked.
+
+The figures are in `client/components/explainers/prose-scrub-0-4-a-small-model-as-second-reader/`, with a copy of the runtime in `_figure/` and all seven registered in `registry.ts`.

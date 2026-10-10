@@ -1,0 +1,18 @@
+I added one figure to the post. It goes right after the paragraph where Claude audits its own change to the rule ("Claude audited the change… fails on the relaxed code."), because that moment is the one the title is about. It builds and typechecks. I looked at it in the browser at phone and desktop widths: no console errors and no sideways scroll at 375px.
+
+**What it shows:** a "you must be this tall" check for rhythm. Three copies of the mkcmd-agent README stand against a dashed pass line at 0.60:
+- **As written:** every text line on the page is the same length (flat rhythm). It reaches 0.54 and fails.
+- **Ruler changed:** the same page stands on a stool made of its own headings, list items and table rows. It just touches the line at 0.60, and a tick beside it shows the deslop reference script still reading 0.58.
+- **Writing changed:** a second agent rewrote it, the lines are uneven, and it clears the line at 0.68 (in the accent colour).
+
+All the scores come from the post. They're close together, so the height differences are small. I kept it that way so the drawing doesn't overstate what happened.
+
+**One thing to check:** by the time it reached 0.68, prose-scrub also skipped headings when measuring. That was the later, justified change that matches the reference script. The figure doesn't show that in the third panel; it reads the table's three numbers as before the relaxation, during it, and after an honest rewrite. Say if you'd rather the third panel showed it.
+
+**Files:**
+- New: `client/components/explainers/prose-scrub-built-by-the-agent-it-gates/HeightCheck.tsx`
+- `client/components/explainers/registry.ts`: registered as `prose-scrub-built-by-the-agent-it-gates/height-check`
+- `client/content/posts/data/prose-scrub-built-by-the-agent-it-gates.ts`: the figure block, with alt text and a caption
+- `client/public/posts/prose-scrub-built-by-the-agent-it-gates.md`: the matching `*Figure: …*` line in the same place
+
+Nothing is committed.

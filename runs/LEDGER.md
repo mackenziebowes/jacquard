@@ -1,0 +1,24 @@
+# Run ledger
+
+One row per Jack run. Numbers from `bun runs`. Verdict is Mackenzie's.
+
+| # | Date | Figure | Model / thinking | Turns | Tools | Tokens in / out | Cost | Verdict | What changed before this run |
+|---|------|--------|------------------|-------|-------|-----------------|------|---------|------------------------------|
+| 1 | 2026-10-09 | prose-scrub-0-4 / opening-diff | claude-opus-5-5 / medium | 25 | 29 (5 read, 1 write, 23 bash) | 740k (700k cache read) / 12k | $0.58 | correct, but quiet | Starting kit |
+| 2 | 2026-10-09 | prose-scrub-0-4 / opening-diff | claude-opus-5-5 / medium | 21 | 29 (6 read, 1 write, 2 edit, 20 bash) | 534k (498k cache read) / 12k | $0.52 | remarkably quiet, but correct in its place; kept | agent-browser + its core skill; `bun dev` fixed in the site |
+| 3 | 2026-10-09 | generative-og-images / halftone-ribbon (Jack chose the passage) | claude-opus-5-5 / medium | 32 | 34 | 1.6M (1.54M cache read) / 21k | $1.06 | "knocked this out of the park" | System prompt names agent-browser; new post; open-ended prompt |
+| 4 | 2026-10-09 | vibe-manufacturing / runs-vs-right (Jack chose the passage) | claude-opus-5-5 / medium | 14 | 15 | 251k (229k cache read) / 7.5k | $0.30 | undercooked: "One *graph*?" | Nothing (control run on a new post) |
+| 5 | 2026-10-09 | vibe-manufacturing / draft-sieve (Jack chose the passage) | claude-opus-5-5 / medium | 15 | 17 | 340k (312k cache read) / 9.7k | $0.40 | pending | Skill: physical scenes, not charts |
+| 6 | 2026-10-09 | where-small-business-owners / leaving-the-feed (Jack chose) | claude-opus-5-5 / medium | 14 | 18 | 351k (320k cache read) / 14k | $0.50 | pending | None (batch, unattended) |
+| 7 | 2026-10-09 | eeat-requires-custom-websites / shipped-weight (Jack chose) | claude-opus-5-5 / medium | 16 | 18 | 386k (356k cache read) / 11k | $0.44 | pending | None (batch, unattended) |
+| 8 | 2026-10-09 | prose-scrub-built-by-the-agent-it-gates / height-check (Jack chose) | claude-opus-5-5 / medium | 22 | 31 | 621k (584k cache read) / 15k | $0.61 | pending | None (batch, unattended) |
+| 9 | 2026-10-09 | vibe-manufacturing / check-loop (why it matters) | claude-opus-5-5 / medium | 17 | 20 | 447k (413k cache read) / 14k | $0.53 | pending | Split into two chained skills; prompt didn't name a kind |
+| 10 | 2026-10-09 | where-small-business-owners / minute-slots (re-run of 6) | claude-opus-5-5 / medium | 24 | 26 | 921k (864k cache read) / 18k | $0.82 | "this animation sucks"; reverted to run 6 | figure-runtime skill (installed into the site by Jack) |
+| 11 | 2026-10-09 | vibe-manufacturing: whole post (hero + 3 sections; kept 2) | claude-opus-5-5 / medium | 42 | 52 | 3.06M (2.94M cache read) / 51.5k | $2.20 | "completely amazeballs" | post-figures skill; runtime skill: don't read source, don't reuse example metaphor |
+| 12 | 2026-10-09 | generative-og-images: whole post (hero + 4 sections; kept 1) | team: opus-5-5 lead, sonnet-5-5 ×7, fable-5-1 review | 129 (35 lead) | — | lead 2.85M / 40k; team out 122k | $6.13 (lead $1.93, Sonnet $1.44, Fable $2.76) | pending | Team: subagent extension, figure-maker + reviewer agents |
+| 13A | 2026-10-09 | prose-scrub-0-4: whole post, 7 figures (worktree A) | team claude-a: Opus main, Fable big, Sonnet little ×15 | 341 (lead 38) | — | team out 299k | $8.23 (main $1.80, big $0.40, little $6.04) · 53 min | lost the split test: "more artistic and skeumorphic", "barely better" for 8x | Roles: big-bro reviews plan only, little-bro builds; --team |
+| 13B | 2026-10-09 | prose-scrub-0-4: whole post, 7 figures (worktree B) | team claude-b: Sonnet main, Opus big, Haiku little ×7 | 305 (lead 18) | — | team out 389k | $1.34 (main $0.48, big $0.15, little $0.71) · 38 min | "B very obviously wins the split tests" | Same as 13A, different team |
+| 14 | 2026-10-09 | what-is-google-eeat: whole post, 13 figures | team claude-c: Sonnet main, Fable big (never called), Haiku little ×13 | 459 (lead 19) | — | team out 448k | $1.24 (main $0.59, little $0.65) · 35 min | pending | Team C; test rules in APPEND_SYSTEM |
+| init-1 | 2026-10-09 | personal-site: jack init, 1 vibe (07-geometric-nature) | Fable (team claude-c big) | 25 | 38 | 1.09M (1.02M cache read) / 16k | $1.98 · 6 min 24 s | pending | First style-init |
+| 15 | 2026-10-09 | prose-scrub-0-4: whole post, 5 new figures (main checkout, kept 1) | team claude-c + style.md, but Main Guy (Sonnet) built alone: no Big Bro, no Little Bros | 13 | 17 | 424k (374k cache read) / 16k | $0.36 · ~3 min | "very good"; "clear design language rather than human puppets" | style-init (init-1); compare with 13B ($1.34, 38 min) |
+| 16 | 2026-10-09 | prose-scrub-0-4: whole post, 5 new + 1 restyled, all animated | team claude-c + style.md + hard gates: Sonnet main, Fable big ×2, Haiku little ×10 | 134 (lead 13+) | — | team out 253k | $1.95 · 21 min | pending | Hard gates; same prompt, team and post as 15 |

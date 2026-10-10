@@ -1,0 +1,31 @@
+I've built seven figures for the post: an animated hero right after the intro, and one figure for each of six sections. `tsc` passes, the page shows no console errors and no horizontal overflow at 375px, and I looked at every figure's finished state at desktop and phone width. I didn't run the end-to-end tests, and nothing is committed.
+
+**The plan.** All seven are scenes in one shared setting, kept in `world.tsx`. Each paragraph is a paper slip on a conveyor belt. The gate is a stamp that only inks marks on a slip. The judge is a bench of five identical small readers (the Haiku runs) holding up cards. Mackenzie is a taller figure at the end of the belt, and only the scissors (the rewriter) cut anything.
+
+| Figure | Claim | Scene |
+|---|---|---|
+| Hero (`two-readers`) | The gate catches listed words, five Haiku runs catch what no list can see, the rewrite made one post worse, and he ships anyway | Slips pass the gate and the judge; the scissors cut "Okay. But"; Mackenzie frowns slightly; the belt keeps running under "0.4.0 shipped" |
+| A bet about headings | "I lost": runs averaged 0.47, 0.52 and 0.50, from 0.05 to 0.90, but all three quoted the same seven lines, which the rewrite cut | A chalk line at 1.0, the real scores well below it, three strings to the same 7 lines, and those 7 lines in a cut pile |
+| What to ask a small model | Each paragraph is scored on importance and on evidence, with a flag only when importance is "much higher" | Three balance scales, one of which tips hard and gets a flag; the copula rule sits parked in a corner |
+| Five runs, averaged | Runs differed by one step (0.25 against 0.3), no run was the odd one out, and 158 of 330 scores agreed | The five readers move over the bridge test file's slips; under each slip, one reader's card sits a notch low, a different one each time; only the planted pieces get flags |
+| A field named claim | It wasn't laziness: a field named "claim" got sentences from four of the five runs | Before: four forms with writing spilling out and one with a number. After: five `importance_score` forms, each with a digit and a tick |
+| Testing it on my own posts | The loop "found real things to fix" and also made the small-business post worse | The belt as a loop that slips can go round again; the small-business post goes from 14 marks to 1 with a faint crease, and the résumé (the control) goes through untouched |
+| Where clean reads worse | The cut setups were there on purpose; he accepts "slightly worse writing", and judge flags now go to a person | A reader walks down stairs of slips and stumbles slightly once "I found." and "Okay." are cut; the flag goes to Mackenzie's hand, not the scissors |
+
+- **What I left out:** the "Using it" section (install commands and costs) and the source list, since they have nothing to explain. I also didn't illustrate the paragraph about token costs (65,000 against 58,500), because it's a second idea in that section.
+- **Changes after the plan review:** the gate only inks and only the scissors cut, so the last section's "flags go to a person, not the rewriter" still means something. The headings figure shows only numbers the post gives. The loop figure follows one slip round the loop instead of repeating the table above it as bars.
+
+**Made-up values.** These are all labelled as illustrative in the captions:
+- the digits on the forms in the "claim" figure;
+- which reader sits a notch low on each slip in the five-runs figure;
+- the weight sizes on the balance scales;
+- the count of 4 marks between laps in the loop figure.
+
+**What I changed in the site:**
+- copied the figure runtime into `client/components/explainers/_figure/`;
+- added the seven figures and `world.tsx` in `client/components/explainers/prose-scrub-0-4-a-small-model-as-second-reader/`;
+- registered them in `registry.ts`;
+- placed them, with alt text and captions, in the post's data file;
+- added a matching `*Figure: …*` line for each in the markdown twin, `client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md`.
+
+The other repo's server was on port 3000, so I started this repo's dev server on port 3101, and it's still running.

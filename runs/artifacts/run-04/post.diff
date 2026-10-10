@@ -1,0 +1,50 @@
+diff --git a/client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts b/client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts
+index 4ff3fff..200bd45 100644
+--- a/client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts
++++ b/client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts
+@@ -30,6 +30,12 @@ export const how_and_why_to_get_involved_with_vibe_manufacturing: Post = {
+       "type": "paragraph",
+       "text": "The premise is easy to like: design gets cheap, and making becomes the constraint. The evidence is mixed. On benchmarks that score past whether the code runs, AI-generated boards and CAD parts pass far less often than they run. The best full pass rate on one hardware benchmark is 8.15%. What looks cheap is drafting. What still costs is checking."
+     },
++    {
++      "type": "explainer",
++      "id": "how-and-why-to-get-involved-with-vibe-manufacturing/runs-vs-right",
++      "alt": "Horizontal bars showing how much AI design output survives stricter checks. CAD assemblies, best model on MUSE: code runs 77.4%, geometry valid 68.9%, design intent met 52.4%. Circuit boards, best model on HWE-Bench: 8.15% pass static rules and simulation, with other models at 4.4-6.6%.",
++      "caption": "Each step down is a stricter check. Figures are the best model on each benchmark, from the research document; the MUSE last stage is judged by a model, and the two benchmarks are not comparable with each other."
++    },
+     {
+       "type": "paragraph",
+       "text": "That is a reason to get involved anyway. Checking is a software-shaped problem. Design-rule checks, simulations and vendor manufacturability checks are deterministic, and the stronger results in the research pair a model with one of them."
+@@ -101,6 +107,11 @@ export const how_and_why_to_get_involved_with_vibe_manufacturing: Post = {
+           "label": "JLCPCB, US tariff policy FAQ",
+           "href": "https://jlcpcb.com/help/article/us-tariff-policy-faq"
+         },
++        {
++          "type": "source",
++          "label": "MUSE, a Text-to-CAD benchmark (arXiv 2605.28579)",
++          "href": "https://arxiv.org/html/2605.28579"
++        },
+         {
+           "type": "source",
+           "label": "HWE-Bench (arXiv 2603.18102)",
+diff --git a/client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md b/client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md
+index e13eff6..65c76a5 100644
+--- a/client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md
++++ b/client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md
+@@ -27,6 +27,8 @@ If AI makes designing physical things cheap, the question worth asking is what a
+ 
+ The premise is easy to like: design gets cheap, and making becomes the constraint. The evidence is mixed. On benchmarks that score past whether the code runs, AI-generated boards and CAD parts pass far less often than they run. The best full pass rate on one hardware benchmark is 8.15%. What looks cheap is drafting. What still costs is checking.
+ 
++*Figure: Horizontal bars showing how much AI design output survives stricter checks. CAD assemblies, best model on MUSE: code runs 77.4%, geometry valid 68.9%, design intent met 52.4%. Circuit boards, best model on HWE-Bench: 8.15% pass static rules and simulation, with other models at 4.4-6.6%.*
++
+ That is a reason to get involved anyway. Checking is a software-shaped problem. Design-rule checks, simulations and vendor manufacturability checks are deterministic, and the stronger results in the research pair a model with one of them.
+ 
+ The second reason is that trying is cheap. A small circuit board is advertised from $2.00 for five, and assembly from an $8 setup fee. Those are one vendor's starting prices, not typical ones, but a first order costs little. No source measures what first orders teach, so the way to find out is to place one.
+@@ -58,6 +60,7 @@ The research document has the figures, the sources and a list of what I could no
+ - [Vibe manufacturing: given the premises, what can one do? (the research behind this post)](https://www.mackenziebowes.com/research/vibe-manufacturing)
+ - [JLCPCB, PCB assembly service page (vendor prices)](https://jlcpcb.com/pcb-assembly)
+ - [JLCPCB, US tariff policy FAQ](https://jlcpcb.com/help/article/us-tariff-policy-faq)
++- [MUSE, a Text-to-CAD benchmark (arXiv 2605.28579)](https://arxiv.org/html/2605.28579)
+ - [HWE-Bench (arXiv 2603.18102)](https://arxiv.org/abs/2603.18102)
+ - [StationX, AI PCB design](https://app.stationx.net/articles/ai-pcb-design)
+ - [Mollick (2014), The dynamics of crowdfunding](https://leeds-faculty.colorado.edu/bhagat/Dynamics-of-Crowdfunding.pdf)

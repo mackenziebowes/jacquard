@@ -1,0 +1,17 @@
+I added one figure to the post, in the Core Web Vitals section, right after "Template sites struggle with performance… Every feature you don't use still ships to the browser." It shows the post's main mechanism, which is that unused code still gets sent to the browser and slows the page. It's also the one passage that has real numbers to put on a scene.
+
+**What it shows:** two hand carts each deliver a page to a phone.
+- **Template theme:** the cart is piled with 16 boxes, and only 2 of them (in green) are what the page uses. The rest are labelled unused layouts, plugins and theme code. The pusher leans hard into the load and is still far from the phone. The label reads "43% of WordPress sites pass Core Web Vitals".
+- **Custom build:** the cart carries only the 2 green boxes and has nearly reached its phone. The label reads "83%+ of custom or optimized builds pass".
+
+The caption says the pass rates come from Search Engine Journal's analysis of Chrome UX Report data, and that the box counts are made up for illustration.
+
+**Checks:** it type-checks and has no console errors. I looked at it on the running dev server at 375px and on desktop, and it doesn't overflow sideways at 375px. After I enlarged the in-figure text for phones, I only re-checked the desktop view; the 375px screenshot I took then was still the old size, so it's worth one more look on a phone.
+
+**Files:**
+- `client/components/explainers/eeat-requires-custom-websites/ShippedWeight.tsx` (new, static SVG using the site's colour variables)
+- `client/components/explainers/registry.ts`: registered as `eeat-requires-custom-websites/shipped-weight`
+- `client/content/posts/data/eeat-requires-custom-websites.ts`: the figure block, with alt text and caption
+- `client/public/posts/eeat-requires-custom-websites.md`: the matching `*Figure: …*` line in the same place
+
+Nothing is committed.

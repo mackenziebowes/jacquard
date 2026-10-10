@@ -1,0 +1,11 @@
+I added one figure to the vibe manufacturing post. It sits right after the "Why bother" paragraph that ends "What looks cheap is drafting. What still costs is checking." That's the post's central claim, and the 8.15% figure is easy to skim past as a bare number.
+
+**What it shows:** an "Agent" hopper pours out 100 drafted circuit boards, labelled "cheap and quick". They land on a sieve labelled "checks: design rules + simulation". 92 pile up on it ("92 caught"), and 8 drop through into a tray ("8 pass every check"). The 8 is the benchmark's 8.15% scaled to 100, and the caption says so. The boards that pass are in the site's green accent; everything else uses the site's own colours.
+
+The type check passes, the page renders with no console errors, and there's no sideways scrolling at 375px. I looked at it on a phone-width screen and on desktop. Nothing is committed.
+
+**Files:**
+- New figure: `client/components/explainers/how-and-why-to-get-involved-with-vibe-manufacturing/DraftSieve.tsx` (a static SVG)
+- Registered as `how-and-why-to-get-involved-with-vibe-manufacturing/draft-sieve` in `client/components/explainers/registry.ts`
+- Placed in `client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts`, with alt text and a caption
+- Mirrored as one `*Figure: …*` line at the same spot in `client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md`

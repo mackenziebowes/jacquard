@@ -1,0 +1,28 @@
+The post now has six figures: the two it already had and four new ones. All four new ones play once when they scroll into view. I checked each one in the browser at desktop and 375px width: no console errors, no sideways scrolling, and the types check passes. I haven't run the end-to-end tests.
+
+**What was added**, all in one world: the agent hopper, drafted boards, the sieve of checks, "You", with green for what passes.
+
+| Where | Figure | What it shows |
+|---|---|---|
+| After the intro | `where-to-stand` (hero) | The agent pours drafts and most pile up on the checks, with You beside them. The few that pass drop into a small "first order, cheap to try" box. Beside it, a crate marked "anything that needs capital" jams at the "making" gate before "delivery". |
+| Why bother | `draft-sieve`, `check-loop` | Kept unchanged. They already carry the 8-in-100 pass rate and the "checks are software work, 5 boards from $2" point. |
+| How, after the list | `first-order-log` | A notepad titled "your log" fills in with the post's own entries: the timer chip that won't run on 3 V, the via almost on a pad, the vendor's limits, and a blank "what went wrong". A copy then goes into the one empty slot on a shelf of sources, under "no source measures how often first orders fail". |
+| Stay away, after the first paragraph | `capital-road` | 20 funded crates pass the design gate and queue at making, shipping and certification. 5 reach the backers, labelled "5 on time, about 1 in 4" (the 24.9%). |
+| What would change this, after the list | `count-stops-here` | The 8 passing boards ride into a fabrication shed and come out each tagged "?". A line at the shed door marks where the counting stops. |
+
+**Choices to check:**
+- The last section's figure only covers its first item (nobody has counted what works after fabrication). The other two items are missing evidence with nothing physical to draw.
+- The paragraph about the $1.37B raise has no figure, and nor do the sources list or the closing line.
+- Some numbers in the drawings are made up for the picture, and the captions say so. These are the hero's counts, the books on the shelf, and how the 15 late crates split across the three gates (7, 5 and 3), since the post gives no split.
+- On a phone the smallest labels come out at about 12px, the same as the two existing figures.
+
+**Files**, in `client/components/explainers/how-and-why-to-get-involved-with-vibe-manufacturing/`:
+- `WhereToStand.tsx`, `FirstOrderLog.tsx`, `CapitalRoad.tsx` and `CountStopsHere.tsx` are the new figures.
+- `world.tsx` holds the shared drawing pieces.
+
+I also edited:
+- `registry.ts`, to register the four figures.
+- The post's data file, to place them with their descriptions and captions.
+- `public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md`, the markdown twin, with a `*Figure: …*` line at each spot.
+
+Nothing is committed.

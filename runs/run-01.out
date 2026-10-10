@@ -1,0 +1,20 @@
+$ bun bin/jack.ts -p --name "run-01 prose-scrub-0-4 diff-of-opening" "Add an explainer figure to the post prose-scrub-0-4-a-small-model-as-second-reader, for the paragraph that starts 'The diff of that post's opening showed the problem.'"
+I added the figure right after the paragraph that starts "The diff of that post's opening showed the problem." It shows the real opening of the small-business post as a word-level diff, with each crossed-out word or sentence labelled by what asked for the cut. A short key at the top sorts the cuts into three colours:
+
+- **Word list** (grey): 2 throat-clearing cuts and 2 adverb cuts.
+- **Judge** (green): the "Okay." sentence.
+- **No rule** (red): the "But", which the rewriter dropped on its own.
+
+**One mismatch with your text.** Your paragraph says two adverbs were cut. The rewrite's change log lists three: "actually", "really" and "actually". In the figure, "really" disappears inside a rewritten phrase rather than as its own cut. That phrase is "Not where marketing blogs say they are - where they really are", which became "as opposed to where marketing blogs say they are". It's tagged "rewritten" and not counted, which keeps the figure in line with your "two adverbs". If you'd rather show all three cuts, the paragraph would need to change.
+
+The before and after text comes from `~/dev/prose-scrub-review/2026-10-09/`. I shortened one long unchanged stretch with "…" and collapsed the paragraph that didn't change.
+
+**Changes:**
+- New: `client/components/explainers/prose-scrub-0-4-a-small-model-as-second-reader/OpeningDiff.tsx`. It's styled HTML text, not SVG, so it wraps on phones, and it uses the site's colour variables.
+- `client/components/explainers/registry.ts`: registered as `prose-scrub-0-4-a-small-model-as-second-reader/opening-diff`.
+- `client/content/posts/data/prose-scrub-0-4-a-small-model-as-second-reader.ts`: the explainer block, with alt text and the caption "The opening before and after the rewrite. Each cut is tagged with what asked for it."
+- `client/public/posts/prose-scrub-0-4-a-small-model-as-second-reader.md`: the matching `*Figure: …*` line in the same place.
+
+**Checks:** The type check passes. I looked at screenshots at desktop width and at 375px in dark mode: no console errors and no sideways scrolling. I changed the judge colour from orange to green because orange was too close to the red.
+
+`bun dev` returned a 500 on post pages because the image route imports `cloudflare:workers`, which webpack can't load. My change doesn't cause this, but it means the normal dev server can't show the page. I checked it with `bun run dev:vinext` instead. Nothing is committed.

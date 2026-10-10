@@ -1,0 +1,18 @@
+I added a figure to the "Why bother" section, right after the paragraph that ends "What still costs is checking." That sentence carries the post's main claim: AI designs pass basic checks far more often than they turn out to be right. The figure shows that gap getting wider as the checks get stricter.
+
+**What it shows** (numbers from the research document):
+- **CAD assemblies, best model on MUSE:** the code runs in 77.4% of tasks, the geometry is valid in 68.9%, and the design intent is met in 52.4%. A dashed outline on each bar marks what the previous check let through and this one didn't. The final stage is labelled "scored by a model judge".
+- **Circuit boards, best model on HWE-Bench:** 8.15% pass the full check (static rules plus simulation). Small ticks mark the other models at 4.4-6.6%. A note says static-rule scores alone average much higher, since the research gives no number for that.
+- The caption says the two benchmarks can't be compared with each other.
+
+Two things to check:
+- **New source:** the MUSE numbers weren't cited in the post before, so I added MUSE (arXiv 2605.28579) to the sources in both the data file and the markdown twin. The research document says the MUSE abstract confirms the drop across the three stages but not the exact percentages.
+- **Uncommitted changes:** many other files in the repo have uncommitted changes from earlier work. Mine are only the four files below. Nothing is committed.
+
+The type check passes. At 375px the page has no horizontal overflow. I looked at it on phone and desktop widths and the browser console showed no errors.
+
+**Files:**
+- `client/components/explainers/how-and-why-to-get-involved-with-vibe-manufacturing/RunsVsRight.tsx` (new; built with HTML and CSS bars rather than SVG, using the site's colour variables)
+- `client/components/explainers/registry.ts` (registered as `how-and-why-to-get-involved-with-vibe-manufacturing/runs-vs-right`)
+- `client/content/posts/data/how-and-why-to-get-involved-with-vibe-manufacturing.ts` (the figure block and the MUSE source)
+- `client/public/posts/how-and-why-to-get-involved-with-vibe-manufacturing.md` (the `*Figure: …*` line in the same place, and the MUSE source)

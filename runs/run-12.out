@@ -1,0 +1,29 @@
+I've added five new figures to the post and kept the existing halftone figure. They build, the console shows no errors, and nothing overflows at 375px. I looked at every figure top to bottom at 1280 and 375 wide. Nothing is committed.
+
+**Plan.** All the figures share one look, taken from the real OG images: a page drawn as a sheet of text, a dark brown map card with orange dot bands along the main contour lines, and grey labels.
+
+| Where | Claim | Scene |
+|---|---|---|
+| Hero (after the intro) | Every page gets its own map, drawn from its text and last-edit date, and an edit redraws only that page's map | Three pages go through one generator and come out as three different maps with no text. Then one page is edited and only its map is redrawn |
+| Motivation | The platform already shows the title and domain beside the image, and X puts its badge on the bottom-left corner, so baked-in text repeats and collides | A link preview whose card carries the drafted domain mark. The "X Article" badge lands on top of the mark, then the mark lifts off the card |
+| Plan | Only the first and last of the four stages touch files or the framework | Four stations in a row. Acquire is cabled to "files + git" and Rasterize to "Next.js". The middle two sit in a sealed case with nothing plugged in |
+| Research | The prompts named our choice, so the research looked for contour art; the rule we kept is to ask what is out there | Five researchers with lamps. Left: all five lamps converge on an empty spot where contour art would be. Right: the lamps fan out over the field, labelled as the rule rather than a rerun |
+| Implementation | Kept the existing `HalftoneRibbon` | It already fits the section |
+| Refactor | The seed describes the page and says nothing about how to draw it; a second synth needed no change to it | One seed tray with five compartments, cabled to two synths. The terrain synth leaves its Series socket empty; the ridgeline synth plugs into it |
+
+**Fixes from the design review:**
+- **Research:** the contour spot is now empty, because the post says no live site using contour art was found.
+- **Refactor:** the ridgeline synth is now wired to all the parts its source code actually reads. "Seed unchanged" is now plain text instead of an orange stamp.
+- **Plan:** each station keeps a faded copy of what it made, so the still picture reads left to right.
+- **Maps:** the hills now run off the card edges, so the maps look more like the real images.
+- **Halftone figure:** the caption now says "true pixel scale when the figure is shown full width", and the hint says "point at or tap".
+
+**Files:**
+- Figures are in `client/components/explainers/generative-og-images-built-and-measured/`: `world.tsx` (shared look), `PageToMap.tsx` (hero), `NoTextOnTheCard.tsx`, `SealedMiddle.tsx`, `LeadingLamp.tsx` and `OneSeedTwoSynths.tsx`. `HalftoneRibbon.tsx` got the hint change.
+- `client/components/explainers/registry.ts` has the five new entries.
+- Alt text and captions are in `client/content/posts/data/generative-og-images-built-and-measured.ts`, with matching `*Figure: …*` lines in `client/public/posts/generative-og-images-built-and-measured.md`.
+
+**Worth a look:**
+- On a phone, the labels in the hero and the Research figure come out at about 10-11px. They're readable but small.
+- The Refactor figure's cables are busy at desktop width. You can follow them, but there are a few crossings.
+- All the maps, page layouts and bar heights are made up, and the captions say so. The only real numbers used are 1200 × 630, five research passes and six features.

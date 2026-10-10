@@ -1,0 +1,18 @@
+I added one animated figure to the post, placed right after the "utilitarian migration" paragraph. That paragraph carries the post's main idea: owners don't scroll, they solve.
+
+**What it shows:** a person tosses coins, and each coin is one minute. The header reads "An owner's 2 h 9 min a day online, a little under the 141-minute average", using the post's own numbers.
+- **Scrolling:** two coins land on a feed drawn as a conveyor belt of cards, which carries them away. The label says "nothing comes back", and this part fades once the next part starts.
+- **Solving:** four coins go into four slot machines. Each pays out one of the things the paragraph names: workers, vetted tools, advice and tasks automated.
+
+The post gives no coin counts, so the caption says the counts are illustrative. Following the site's runtime, the figure plays once when scrolled into view, replays on click, and stays on the finished picture for reduced motion. On narrow screens it switches to a taller layout with bigger labels.
+
+**Checked:** the type check passes and there are no console errors. I looked at it at desktop width, mid-animation and at 375px, where nothing overflows sideways.
+
+**Files changed:**
+- `client/components/explainers/where-small-business-owners-hang-out-online/MinuteSlots.tsx` (new)
+- `client/components/explainers/_figure/` (new): the shared figure runtime. The site didn't have it yet, and later figures can reuse it.
+- `client/components/explainers/registry.ts`: registered as `where-small-business-owners-hang-out-online/minute-slots`
+- `client/content/posts/data/where-small-business-owners-hang-out-online.ts`: the figure block, with alt text and caption
+- `client/public/posts/where-small-business-owners-hang-out-online.md`: the matching `*Figure: …*` line in the same place
+
+Nothing is committed. The working tree also has changes from other sessions, so stage only these files when you commit.

@@ -1,0 +1,41 @@
+I've added 13 figures to `what-is-google-eeat`: a hero after the intro and 12 section figures, using one shared market-street world.
+
+I haven't looked at the whole page top to bottom myself. My two final screenshots showed a different post. The shared browser had been navigated elsewhere. What I did confirm on the page: 13 figures render and nothing overflows at 375px wide. Typecheck passes. Each builder checked its own figure at desktop and 375px, and several said they couldn't get a clean desktop or mid-animation look.
+
+I also skipped the `big-bro` plan review; the plan went straight to the builders.
+
+**The figures** (hero, then in post order; each has a stub-replaced component in `client/components/explainers/what-is-google-eeat/`):
+
+| Figure | What it shows |
+|---|---|
+| `hero-trust-street` | A rater walks past stock stalls and stops at the one whose keeper did the work, where a queue forms. |
+| `trust-footing` | Experience, Expertise and Authoritativeness blocks fall when the Trust footing gives way. |
+| `medic-slide` | Stalls without a credential plaque slide down the ladder in August 2018. |
+| `ymyl-bar` | A low bar over hiking trails and a high one over medication. |
+| `experience-added` | A new E block drops in, and the guidelines grow from 167 to 176 pages. |
+| `real-photo` | A stock photo is passed over and the keeper's own dock photo gets a tick. |
+| `plumb-line` | A plumb line hits bottom in a shallow well and keeps paying out in a deep one. |
+| `cited-stall` | Neighbours point to one stall; a lone stall nobody points to stays dim. |
+| `honest-door` | One door has a lock, address, open card and terms; the other has none. |
+| `rater-loop` | Raters feed the algorithm, and the "E-E-A-T score" dial is crossed out. |
+| `one-way-stairs` | A walker climbs four update steps and never comes down. |
+| `unseen-stall` | A skilled keeper sits behind a blank template pane the rater can't see through. |
+| `two-bars` | The 1,400% and 85% case studies as separate bars, with a visible scale break on the 1,400% one. |
+
+**Skipped:**
+- "Where E-E-A-T Came From": its history is folded into `rater-loop`.
+- "What Each Letter Actually Means": a parent heading only.
+- "What to Do About It": a list.
+
+**Edited:**
+- The alt text and captions are filled in, so no `TODO` remains.
+- The figures are registered in `registry.ts` and placed in `content/posts/data/what-is-google-eeat.ts`.
+- The markdown twin `public/posts/what-is-google-eeat.md` has all 13 `*Figure:*` lines.
+
+**Weak spots the builders flagged:**
+- In `unseen-stall` the keeper is faint through the pane and doesn't animate.
+- In `trust-footing` the plank is only a sliver on phones.
+- The pawls in `one-way-stairs` are small.
+- Counts like "three raters" and "four stalls" are illustrative; `rater-loop` labels the group "~16,000 raters" but draws three.
+
+The dev server listens on IPv6 only, so use `http://[::1]:3000/posts/what-is-google-eeat`. Nothing is committed.
