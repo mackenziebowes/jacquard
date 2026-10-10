@@ -26,6 +26,8 @@ Read the whole post. Then write the plan to `.jacquard/plans/<post-slug>.md` bef
 - numbers: the post's numbers it may use, or "illustrative"
 ```
 
+Several posts in one run: one plan file per post, all written before any building, sharing the project's style and reusing each other's pieces through `library.md`. Big Bro can review them together or one at a time; each post's Little Bros wait for that post's review.
+
 The harness enforces this (Mackenzie, 2026-10-09 19:06: "*MUST* write a plan, then must have plan reviewed, plan must have animation, then must swarm the animation work."): Big Bro won't review a plan whose figures lack a `file` or an `animation`; no Little Bro starts before the review; you can't write figure files yourself except stubs that return null; and you can't finish while a planned figure is undelegated or still a stub.
 
 - **One world per post.** Pick a cast and a set for the whole post (the same people, the same machine, the same landscape) and let each section's figure be a different scene in that world. A reader should feel they're watching one story, not flipping through clip art.

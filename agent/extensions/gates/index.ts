@@ -7,7 +7,8 @@
 //   - file: path/to/Figure.tsx
 //   - animation: what moves, in what order, over how long
 //
-// 1. Big Bro won't review until this run's plan exists and every figure in it has a file and an animation.
+// A run can cover several posts: every plan written in the run is gated on its own.
+// 1. Big Bro won't review until a plan exists and every figure in every plan has a file and an animation.
 // 2. No Little Bro starts until Big Bro has reviewed it.
 // 3. Main Guy can't write figure files (anything the plan lists, any .tsx in those folders, anything built
 //    on the figure runtime) except as empty stubs. Without a plan, it can't write figure files at all.
@@ -41,17 +42,19 @@ const isStub = (content: string) => content.length <= STUB_MAX && /return\s+null
 export default function gates(pi: ExtensionAPI) {
   if (process.env.JACK_ROLE) return; // a helper's own process: no gates there
 
-  let plan: string | undefined; // the plan file Main Guy wrote in this run
-  let reviewed = false;
+  // every plan file Main Guy writes in this run (one per post; a run can cover several posts)
+  const plans = new Set<string>();
+  const reviewed = new Set<string>(); // plans Big Bro has reviewed
   const delegated = new Set<string>(); // planned file basenames named in a Little Bro brief
   let nudges = 0;
 
-  const figs = () => (plan ? parse(plan) : []);
-  const plannedFiles = (cwd: string) => new Set(figs().filter((f) => f.file).map((f) => resolve(cwd, f.file)));
+  type Planned = Fig & { plan: string; abs: string };
+  const planned = (cwd: string): Planned[] =>
+    [...plans].flatMap((plan) => parse(plan).map((f) => ({ ...f, plan, abs: f.file ? resolve(cwd, f.file) : "" })));
   const isFigureFile = (cwd: string, path: string, content: string) => {
     const abs = resolve(cwd, path);
     if (/registry\.tsx?$/.test(abs) || /\.jacquard\//.test(abs)) return false;
-    const files = plannedFiles(cwd), dirs = new Set([...files].map(dirname));
+    const files = new Set(planned(cwd).map((f) => f.abs).filter(Boolean)), dirs = new Set([...files].map(dirname));
     return files.has(abs) || (abs.endsWith(".tsx") && dirs.has(dirname(abs))) || /defineFigure|<Figure\b/.test(content);
   };
 
@@ -62,16 +65,22 @@ export default function gates(pi: ExtensionAPI) {
       const calls: { agent: string; task?: string }[] = input.tasks ?? input.chain ?? [input];
       for (const c of calls) {
         if (c.agent === "big-bro") {
-          if (!plan) return { block: true, reason: "Gate 1: no plan written in this run. Write the plan to .jacquard/plans/<post-slug>.md: one `## ` section per figure with `- file:` and `- animation:` lines (see post-figures). Then send it to big-bro." };
-          const fs = figs();
-          if (!fs.length) return { block: true, reason: `Gate 1: ${plan} has no figures. One \`## \` section per figure.` };
-          const missing = fs.filter((f) => !f.file || !f.animation || STATIC.test(f.animation)).map((f) => f.title);
-          if (missing.length) return { block: true, reason: `Gate 1: every figure in the plan needs a file and an animation (what moves, in what order, over how long). Missing for: ${missing.join("; ")}. Edit ${plan}, then send it to big-bro.` };
-          if (!String(c.task ?? "").includes(".jacquard/plans/")) c.task = `${c.task ?? ""}\n\nThe plan is in ${plan}.`;
+          if (!plans.size) return { block: true, reason: "Gate 1: no plan written in this run. Write the plan to .jacquard/plans/<post-slug>.md (one file per post): one `## ` section per figure with `- file:` and `- animation:` lines (see post-figures). Then send it to big-bro." };
+          for (const plan of plans) {
+            const fs = parse(plan);
+            if (!fs.length) return { block: true, reason: `Gate 1: ${plan} has no figures. One \`## \` section per figure.` };
+            const missing = fs.filter((f) => !f.file || !f.animation || STATIC.test(f.animation)).map((f) => f.title);
+            if (missing.length) return { block: true, reason: `Gate 1: every figure in a plan needs a file and an animation (what moves, in what order, over how long). Missing in ${plan} for: ${missing.join("; ")}. Fix it, then send it to big-bro.` };
+          }
+          const unnamed = [...plans].filter((p) => !reviewed.has(p) && !String(c.task ?? "").includes(p.replace(/.*\.jacquard\//, ".jacquard/")));
+          if (unnamed.length) c.task = `${c.task ?? ""}\n\nPlans to review: ${unnamed.join(", ")}.`;
         }
         if (c.agent === "little-bro") {
-          if (!reviewed) return { block: true, reason: "Gate 2: Big Bro hasn't reviewed the plan. Send the plan file to big-bro, revise it on its notes, then start Little Bros." };
-          for (const f of figs()) if (f.file && String(c.task ?? "").includes(basename(f.file))) delegated.add(basename(f.file));
+          const task = String(c.task ?? "");
+          const mine = planned(cwd).filter((f) => f.file && task.includes(basename(f.file)));
+          const unreviewed = mine.length ? mine.filter((f) => !reviewed.has(f.plan)) : [...plans].filter((p) => !reviewed.has(p)).map((plan) => ({ plan }));
+          if (!reviewed.size || unreviewed.length) return { block: true, reason: `Gate 2: Big Bro hasn't reviewed ${unreviewed.length ? [...new Set(unreviewed.map((f) => f.plan))].join(", ") : "the plan"}. Send it to big-bro, revise it on its notes, then start Little Bros.` };
+          for (const f of mine) delegated.add(basename(f.file));
         }
       }
       return undefined;
@@ -79,20 +88,20 @@ export default function gates(pi: ExtensionAPI) {
 
     if (event.toolName === "write" || event.toolName === "edit") {
       const path = String(input.path ?? "");
-      if (/\.jacquard\/plans\/[^/]+\.md$/.test(path)) { plan = resolve(cwd, path); return undefined; }
+      if (/\.jacquard\/plans\/[^/]+\.md$/.test(path)) { plans.add(resolve(cwd, path)); return undefined; }
       const content = String(input.content ?? "") + JSON.stringify(input.edits ?? "") + String(input.newText ?? "");
       if (!isFigureFile(cwd, path, content)) return undefined;
       if (event.toolName === "write" && isStub(String(input.content ?? ""))) return undefined;
-      return { block: true, reason: `Gate 3: ${path} is a figure file. Main Guy writes the plan, stubs (a component that returns null) and the wiring; Little Bros build figures.${plan ? " Put it in a little-bro brief." : " Write the plan first (see post-figures)."}` };
+      return { block: true, reason: `Gate 3: ${path} is a figure file. Main Guy writes the plan, stubs (a component that returns null) and the wiring; Little Bros build figures.${plans.size ? " Put it in a little-bro brief." : " Write the plan first (see post-figures)."}` };
     }
 
     if (event.toolName === "bash") {
       const cmd = String(input.command ?? "");
       const writes = /(>|\btee\b|sed\s+-i|python3?\b|perl\s+-i|\bcp\b|\bmv\b|<<)/.test(cmd);
       const p = cmd.match(PLAN);
-      if (writes && p) plan = resolve(cwd, p[1]);
-      const hit = [...plannedFiles(cwd)].find((f) => cmd.includes(basename(f)));
-      if (writes && hit && !p) return { block: true, reason: `Gate 3: that command writes to a planned figure file (${basename(hit)}). Little Bros build figures; Main Guy delegates.` };
+      if (writes && p) plans.add(resolve(cwd, p[1]));
+      const hit = planned(cwd).find((f) => f.file && cmd.includes(basename(f.file)));
+      if (writes && hit && !p) return { block: true, reason: `Gate 3: that command writes to a planned figure file (${basename(hit.file)}). Little Bros build figures; Main Guy delegates.` };
     }
     return undefined;
   });
@@ -100,27 +109,28 @@ export default function gates(pi: ExtensionAPI) {
   pi.on("tool_result", async (event) => {
     if (event.toolName !== "subagent" || event.isError) return undefined;
     const input = event.input as Record<string, any>;
-    if ((input.tasks ?? input.chain ?? [input]).some((c: any) => c.agent === "big-bro")) reviewed = true;
+    const tasks = (input.tasks ?? input.chain ?? [input]).filter((c: any) => c.agent === "big-bro").map((c: any) => String(c.task ?? ""));
+    // a review covers the plans its brief named; a brief naming none covers every plan written so far
+    for (const plan of plans) if (tasks.some((t: string) => t.includes(basename(plan)) || !/\.jacquard\/plans\//.test(t))) reviewed.add(plan);
     return undefined;
   });
 
   // Gate 4: no finishing with planned figures unreviewed, undelegated or still stubs
   pi.on("agent_before_settle", async (_event, ctx) => {
-    if (!plan || nudges >= 3) return undefined;
-    const open = figs().filter((f) => {
+    if (!plans.size || nudges >= 3) return undefined;
+    const open = planned(ctx.cwd).filter((f) => {
       if (!f.file) return false;
-      const abs = resolve(ctx.cwd, f.file);
-      const stub = !existsSync(abs) || isStub(readFileSync(abs, "utf8"));
-      return !reviewed || !delegated.has(basename(f.file)) || stub;
+      const stub = !existsSync(f.abs) || isStub(readFileSync(f.abs, "utf8"));
+      return !reviewed.has(f.plan) || !delegated.has(basename(f.file)) || stub;
     });
     if (!open.length) return undefined;
     nudges++;
-    const why = !reviewed ? "big-bro hasn't reviewed the plan" : "these planned figures aren't built by Little Bros yet";
+    const unreviewed = [...new Set(open.filter((f) => !reviewed.has(f.plan)).map((f) => f.plan))];
     return {
       continue: true,
       entries: [{
         type: "custom_message", customType: "jacquard-gate", display: true,
-        content: `Gate 4: you can't finish yet: ${why}: ${open.map((f) => `${f.title} (${f.file})`).join("; ")}. ${!reviewed ? "Send the plan to big-bro, then delegate each figure to a little-bro." : "Delegate each to a little-bro, in parallel, with a full brief, and wait for them."}`,
+        content: `Gate 4: you can't finish yet. ${unreviewed.length ? `Big Bro hasn't reviewed ${unreviewed.join(", ")}. ` : ""}These planned figures aren't built by Little Bros yet: ${open.map((f) => `${f.title} (${f.file})`).join("; ")}. ${unreviewed.length ? "Send those plans to big-bro, then delegate each figure to a little-bro." : "Delegate each to a little-bro, in parallel, with a full brief, and wait for them."}`,
       }],
     };
   });

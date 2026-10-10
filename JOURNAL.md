@@ -634,3 +634,31 @@ Mackenzie, verbatim:
 > Yea... okay, yea. So, put Jacquard up on my github...
 > Then run bun run og:sync to give it an open graph image...
 > Then run Jacquard on every post. Thanks <3
+
+## 2026-10-09 19:46 PDT - shipped, and every post
+
+- Jacquard is public: https://github.com/mackenziebowes/jacquard (MIT). Raw sessions and their HTML exports stay local.
+- `bun run og:sync` in personal-site: 27 routes, 8 images missing from R2, 8 uploaded (every post, since each post's text changed today), 0 failed; manifest updated.
+- Runs 17-23 started in Mackenzie's terminal, one post at a time (parallel runs would all edit the same figure registry): the Jacquard post, small-business owners, EEAT and custom websites, the prose-scrub build log, what is Google EEAT, vibe manufacturing, generative OG images. prose-scrub 0.4 skipped, since run 16 illustrated it with the current Jacquard an hour earlier.
+
+## 2026-10-09 19:52 PDT - stop after one; several posts in one run
+
+Mackenzie, verbatim, about 19:5x (mid-run; no exact time):
+
+> Oh - stop jacquard after this one.
+>
+> We want to see how it works across multiple posts in a single run, too, right?
+
+The batch is a plain shell loop, and Ctrl-C would kill run 17 mid-figure, so `jack` got a temporary guard: it exits at once if `runs/STOP` exists (marked TEMPORARY in `bin/jack.ts`; to remove after the loop ends). Run 17 finishes; runs 18-23 won't start.
+
+For several posts in one run, the gates tracked a single plan per run. Now every plan file written in the run is gated on its own: Big Bro reviews each (or several at once), each post's Little Bros wait for that post's review, and Main Guy can't finish while any planned figure in any plan is unbuilt. `post-figures` says how a multi-post run works.
+
+## 2026-10-09 20:35 PDT - run 17 done; one post, one commit
+
+Run 17 (the Jacquard post) finished at 20:05: 8 figures (a hero and 7 sections), one Big Bro review, 8 Little Bros, 125 turns, $1.52, 19 min. The guard held; nothing started after it, and the guard is gone. Main Guy's own report lists weak spots it didn't go back to: a motif that doesn't fill its tile, two figures built wide and flat that are too small at 360 px, and an end frame missing a label that appears mid-animation.
+
+Mackenzie, verbatim, 20:35:
+
+> Um... but we should probably commit now with our current progress then run Jacquard one at a time and commit each upgrade instead of all at once.
+
+So: commit everything so far, in both repos, then one post per run and one site commit per run.
