@@ -693,4 +693,4 @@ Two fixes. Plan paths are now always the project's `.jacquard/plans/<file name>`
 
 Run 23 reran vibe manufacturing with the fixed gates: two static figures animated, four marked `status: keep`, $0.91, 7 min. The fix held. Run 24 (generative OG images) found six animated figures already there and stopped for $0.04.
 
-Runs 17-24, every post on the site: about $11.40 and 2 h 15 min of wall time, with one site commit per post. Twice the post was already finished and Jacquard said so and stopped instead of redoing it. Both times Main Guy, unprompted, noticed figures that don't match style.md (outlined stalls in what-is-google-eeat; the outlined look kept in vibe manufacturing) and named restyling as a separate job.
+Runs 17-24, every post on the site: $9.11 and 104 min of run time (19:46-22:06 with a pause), with one site commit per post. Twice the post was already finished and Jacquard said so and stopped instead of redoing it. Both times Main Guy, unprompted, noticed figures that don't match style.md (outlined stalls in what-is-google-eeat; the outlined look kept in vibe manufacturing) and named restyling as a separate job.
