@@ -43,6 +43,10 @@
   .tool .n { color: var(--live); }
   .res { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: var(--dim); white-space: pre-wrap; word-break: break-word; max-height: 7.5em; overflow: hidden; }
   .res.err { color: var(--err); }
+  .res.open { max-height: none; }
+  .x { cursor: pointer; }
+  .x:hover { background: #1d1d22; }
+  .x .hint { color: var(--dim); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 10.5px; }
   .shot img { width: 100%; border: 1px solid var(--line); border-radius: 3px; cursor: zoom-in; margin-top: 4px; }
   .lanes.one .shot img { max-width: 640px; }
   .shot .lbl { color: var(--dim); font-size: 10.5px; }
@@ -175,17 +179,39 @@ overview.addEventListener("click", (e) => {
 });
 
 /* ---------- lanes ---------- */
+// Long texts arrive cut short; click one to read all of it (fetched from the session file), click again to fold it.
+const opened = new Map(); // "<file>|<entry>|<part>" -> full text, or null when the text arrived whole and is only unclamped
+function block(cls, e, part, short, more, prefix = "") {
+  const key = `${e.file}|${e.e}|${part}`, open = opened.has(key), full = opened.get(key);
+  // results are also clamped to a few lines by CSS, so they're expandable even when the text arrived whole
+  const can = more || cls.startsWith("res");
+  if (!can || !e.e) return `<div class="${cls}">${prefix}${esc(short)}</div>`;
+  const hint = open ? " [fold]" : more ? " [show all]" : "";
+  return `<div class="${cls} x${open ? " open" : ""}" data-k="${esc(key)}" data-more="${more ? 1 : ""}" title="Click to ${open ? "fold" : "read all of it"}">${prefix}${esc(full ?? short)}<span class="hint">${hint}</span></div>`;
+}
 function stepHtml(e) {
   if (e.kind === "turn") {
-    const tools = e.tools.map((t) => `<div class="tool"><span class="n">${esc(t.name)}</span> ${esc(t.brief)}</div>`).join("");
-    return `<div class="step"><div class="t">${fmtT(e.at)} · ${esc(e.model)} · $${e.cost.toFixed(3)} · context ${k(e.ctx ?? 0)}</div>${e.text ? `<div class="say">${esc(e.text)}</div>` : ""}${tools}</div>`;
+    const tools = e.tools.map((t, i) => block("tool", e, `tool:${i}`, t.brief, t.more, `<span class="n">${esc(t.name)}</span> `)).join("");
+    return `<div class="step"><div class="t">${fmtT(e.at)} · ${esc(e.model)} · $${e.cost.toFixed(3)} · context ${k(e.ctx ?? 0)}</div>${e.text ? block("say", e, "text", e.text, e.more) : ""}${tools}</div>`;
   }
   if (e.kind === "result") {
     const shots = e.images.map((src) => `<div class="shot"><div class="lbl">${esc(e.label)}</div><img loading="lazy" src="${src}" alt="${esc(e.label)}"></div>`).join("");
-    return `<div class="step">${e.text ? `<div class="res ${e.error ? "err" : ""}">${esc(e.text)}</div>` : ""}${shots}</div>`;
+    return `<div class="step">${e.text ? block(`res${e.error ? " err" : ""}`, e, "text", e.text, e.more) : ""}${shots}</div>`;
   }
   return "";
 }
+document.addEventListener("click", async (ev) => {
+  const el = ev.target.closest(".x[data-k]");
+  if (!el || getSelection().toString()) return; // selecting text to copy shouldn't fold it
+  const key = el.dataset.k;
+  if (opened.has(key)) opened.delete(key);
+  else if (!el.dataset.more) opened.set(key, null);
+  else {
+    const [f, e, part] = key.split("|");
+    opened.set(key, await fetch(`/full?f=${encodeURIComponent(f)}&e=${encodeURIComponent(e)}&part=${encodeURIComponent(part)}`).then((r) => r.text()));
+  }
+  render();
+});
 function renderLanes(only) {
   const lanes = document.getElementById("lanes"), run = currentRun();
   if (!run) { lanes.innerHTML = `<div class="empty">Waiting for sessions…</div>`; return; }

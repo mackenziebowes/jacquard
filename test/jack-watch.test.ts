@@ -68,3 +68,23 @@ test("the page opens on points, one per agent; hover names it; click opens its l
   ab("wait", "300");
   expect(Number(ev("document.querySelectorAll('.lane').length"))).toBe(2);
 });
+
+test("a long message arrives cut short; clicking it shows all of it, clicking again folds it", () => {
+  const long = "Smell 1: the hero repeats section two. ".repeat(60) + "Last note: cut figure four.";
+  appendFileSync(lead, line({ type: "message", id: "r9", timestamp: "2026-10-09T00:00:09.000Z", message: { role: "toolResult", toolCallId: "c1", toolName: "subagent", isError: false, content: [{ type: "text", text: long }] } }));
+  ab("wait", "1500");
+  const ev = (js: string) => JSON.parse(ab("eval", js));
+  const res = "[...document.querySelectorAll('.res.x')].find((el) => el.textContent.startsWith('Smell 1'))";
+  expect(ev(`${res}.textContent`)).not.toContain("Last note");
+  expect(ev(`${res}.textContent`)).toContain("[show all]");
+  ab("eval", `${res}.click()`);
+  ab("wait", "500");
+  expect(ev(`${res}.textContent`)).toContain("Last note: cut figure four.");
+  // stays open when new steps arrive and the lanes redraw
+  appendFileSync(lead, line({ type: "message", id: "a10", timestamp: "2026-10-09T00:00:10.000Z", message: { role: "assistant", model: "claude-sonnet-5-5", content: [{ type: "text", text: "Revising." }], usage: { output: 3, cost: { total: 0.001 } } } }));
+  ab("wait", "1500");
+  expect(ev(`${res}.textContent`)).toContain("Last note: cut figure four.");
+  ab("eval", `${res}.click()`);
+  ab("wait", "300");
+  expect(ev(`${res}.textContent`)).not.toContain("Last note");
+});

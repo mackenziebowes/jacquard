@@ -662,3 +662,11 @@ Mackenzie, verbatim, 20:35:
 > Um... but we should probably commit now with our current progress then run Jacquard one at a time and commit each upgrade instead of all at once.
 
 So: commit everything so far, in both repos, then one post per run and one site commit per run.
+
+## 2026-10-09 20:54 PDT - read the whole message in jack-watch
+
+Mackenzie, verbatim, about 20:54:
+
+> Bugfix for Jacquard's watch feature is being able to click on messages to review the full text. You truncate them by default, which is great, but I am frustrated by being unable to review all of big bro's feedback
+
+The stream still sends short versions (1200 characters for what an agent says, 400 for tool calls and results). Every cut-short step now ends in "[show all]": clicking it fetches the full text from the session file (`/full`, read by line offset like the images) and clicking again folds it. Results, which CSS clamps to five lines, unfold the same way. An open message stays open while new steps redraw the lanes.
