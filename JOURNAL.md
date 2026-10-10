@@ -670,3 +670,13 @@ Mackenzie, verbatim, about 20:54:
 > Bugfix for Jacquard's watch feature is being able to click on messages to review the full text. You truncate them by default, which is great, but I am frustrated by being unable to review all of big bro's feedback
 
 The stream still sends short versions (1200 characters for what an agent says, 400 for tool calls and results). Every cut-short step now ends in "[show all]": clicking it fetches the full text from the session file (`/full`, read by line offset like the images) and clicking again folds it. Results, which CSS clamps to five lines, unfold the same way. An open message stays open while new steps redraw the lanes.
+
+## 2026-10-09 21:27 PDT - the post
+
+Mackenzie, verbatim, 21:27, after reading the Jacquard post on the live site:
+
+> Oh, jeez, claude... This Jacquard post is so butts.
+>
+> We have to sit down someday and figure out how to write better :3
+
+It passed prose-scrub (0.62/0.61) and still read badly. Passing the scrub didn't make it good writing.
