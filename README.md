@@ -79,3 +79,7 @@ Teams live in `teams/`. The three tried so far, each on one whole post:
 - `test/` - end-to-end tests: the runtime in a real browser, `jack-look` as a command, the live view over HTTP.
 
 The subagent extension is adapted from pi's example (MIT), with sessions kept, models read from the environment, and helpers told their role.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

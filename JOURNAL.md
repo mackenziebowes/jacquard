@@ -614,3 +614,23 @@ Mackenzie, verbatim:
 > For now, we are going to wrap up our work - jacquard gets a public git repo with a nice README, then you write a post based on the journal we've been keeping for my site.
 >
 > This is my best evidence of my agentic engineering skills to date and that skill is allegedly in high demand :3 Maybe I'll be able to get more Claude subs soon.
+
+## 2026-10-09 19:45 PDT - the blog post, and shipping
+
+The post (`personal-site`, "Jacquard: raising an explainer agent in a day") was written by Claude from this journal and put through prose-scrub: one finding, `rhythm.flat` (0.53); two fresh subagents rewrote for rhythm (0.62 / 0.61, passing); the judge flagged one sentence, "They shaped everything after." (empty score 0.6).
+
+Mackenzie, verbatim:
+
+> “whose rules were whose in Jack’s instructions: mine, or ones Claude had written while carrying mine out.”
+>
+> This sprawling sentence is exactly the kind of thing humans write.
+>
+> We can add a framework to prose scrub later on how to write long sentences - the secret is qualifiers and conditionals.
+>
+> Anyways, yes, MIT is good, ship Jacquard.
+>
+> The judge flagging one sentence is great, leave it in.
+>
+> Yea... okay, yea. So, put Jacquard up on my github...
+> Then run bun run og:sync to give it an open graph image...
+> Then run Jacquard on every post. Thanks <3
