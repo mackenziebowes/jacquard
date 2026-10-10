@@ -688,3 +688,9 @@ One post per run, one site commit per run: 18 (small-business owners, 13 figures
 Run 22 (vibe manufacturing) deadlocked. Main Guy wrote its plan with a bash heredoc from inside a figure folder, to `../../../../.jacquard/plans/…`. The gate resolved that against the project root, not the folder bash had cd'd into, and registered `/.jacquard/plans/…`, a file that can't exist. Gate 1 then refused every Big Bro request ("has no figures"), Gate 4 refused to let it finish, and Main Guy spent its three nudges explaining it was stuck. It diagnosed the bug correctly, read the gate's source, and tried `mkdir /.jacquard` and `sudo`, which failed. $0.35, 2 min, nothing built.
 
 Two fixes. Plan paths are now always the project's `.jacquard/plans/<file name>`, whatever path a command used, and a registered plan that never became a file is dropped instead of blocking. Gate 4 also counted figures the plan kept as unbuilt, so a plan can now mark one `- status: keep`, and post-figures says to.
+
+## 2026-10-09 22:06 PDT - the batch is done
+
+Run 23 reran vibe manufacturing with the fixed gates: two static figures animated, four marked `status: keep`, $0.91, 7 min. The fix held. Run 24 (generative OG images) found six animated figures already there and stopped for $0.04.
+
+Runs 17-24, every post on the site: about $11.40 and 2 h 15 min of wall time, with one site commit per post. Twice the post was already finished and Jacquard said so and stopped instead of redoing it. Both times Main Guy, unprompted, noticed figures that don't match style.md (outlined stalls in what-is-google-eeat; the outlined look kept in vibe manufacturing) and named restyling as a separate job.
