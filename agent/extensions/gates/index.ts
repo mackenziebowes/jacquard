@@ -6,20 +6,22 @@
 // per figure with at least
 //   - file: path/to/Figure.tsx
 //   - animation: what moves, in what order, over how long
+// and, for a figure already on the page that the plan keeps as it is,
+//   - status: keep
 //
 // A run can cover several posts: every plan written in the run is gated on its own.
 // 1. Big Bro won't review until a plan exists and every figure in every plan has a file and an animation.
 // 2. No Little Bro starts until Big Bro has reviewed it.
 // 3. Main Guy can't write figure files (anything the plan lists, any .tsx in those folders, anything built
 //    on the figure runtime) except as empty stubs. Without a plan, it can't write figure files at all.
-// 4. Main Guy can't finish while a planned figure is undelegated or still a stub.
+// 4. Main Guy can't finish while a planned figure is unreviewed, undelegated (unless kept) or still a stub.
 // Big Bro and Little Bros run in their own pi processes with JACK_ROLE set, where none of this applies.
 // Runs that never write a plan (jack init, questions, small fixes) only meet gate 3.
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { existsSync, readFileSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 
-type Fig = { title: string; file: string; animation: string };
+type Fig = { title: string; file: string; animation: string; status: string };
 const STATIC = /^(none|n\/a|static|no|-)\.?$/i;
 const STUB_MAX = 400;
 const PLAN = /(?:^|[\s"'`=(])([^\s"'`]*\.jacquard\/plans\/[^\s"'`)]+\.md)/;
@@ -30,13 +32,17 @@ function parse(path: string): Fig[] {
   let cur: Fig | null = null;
   for (const line of readFileSync(path, "utf8").split("\n")) {
     const h = line.match(/^##\s+(.+)/);
-    if (h) { cur = { title: h[1].trim(), file: "", animation: "" }; figs.push(cur); continue; }
-    const kv = line.match(/^\s*[-*]\s*(file|animation)\s*:\s*(.*)$/i);
-    if (cur && kv) cur[kv[1].toLowerCase() as "file" | "animation"] = kv[2].trim().replace(/^`|`$/g, "");
+    if (h) { cur = { title: h[1]!.trim(), file: "", animation: "", status: "" }; figs.push(cur); continue; }
+    const kv = line.match(/^\s*[-*]\s*(file|animation|status)\s*:\s*(.*)$/i);
+    if (cur && kv) cur[kv[1]!.toLowerCase() as "file" | "animation" | "status"] = kv[2]!.trim().replace(/^`|`$/g, "");
   }
   return figs;
 }
 
+const kept = (f: Fig) => /^keep/i.test(f.status);
+// Plans always live in the project's .jacquard/plans/. A path seen in a bash command may be relative to a
+// directory the command cd'd into, which the gate can't see, so only the file name is trusted.
+const planPath = (cwd: string, p: string) => resolve(cwd, ".jacquard/plans", basename(p));
 const isStub = (content: string) => content.length <= STUB_MAX && /return\s+null/.test(content);
 
 export default function gates(pi: ExtensionAPI) {
@@ -65,6 +71,7 @@ export default function gates(pi: ExtensionAPI) {
       const calls: { agent: string; task?: string }[] = input.tasks ?? input.chain ?? [input];
       for (const c of calls) {
         if (c.agent === "big-bro") {
+          for (const p of plans) if (!existsSync(p)) plans.delete(p); // a path that never became a file can't block review
           if (!plans.size) return { block: true, reason: "Gate 1: no plan written in this run. Write the plan to .jacquard/plans/<post-slug>.md (one file per post): one `## ` section per figure with `- file:` and `- animation:` lines (see post-figures). Then send it to big-bro." };
           for (const plan of plans) {
             const fs = parse(plan);
@@ -88,7 +95,7 @@ export default function gates(pi: ExtensionAPI) {
 
     if (event.toolName === "write" || event.toolName === "edit") {
       const path = String(input.path ?? "");
-      if (/\.jacquard\/plans\/[^/]+\.md$/.test(path)) { plans.add(resolve(cwd, path)); return undefined; }
+      if (/\.jacquard\/plans\/[^/]+\.md$/.test(path)) { plans.add(planPath(cwd, path)); return undefined; }
       const content = String(input.content ?? "") + JSON.stringify(input.edits ?? "") + String(input.newText ?? "");
       if (!isFigureFile(cwd, path, content)) return undefined;
       if (event.toolName === "write" && isStub(String(input.content ?? ""))) return undefined;
@@ -99,7 +106,7 @@ export default function gates(pi: ExtensionAPI) {
       const cmd = String(input.command ?? "");
       const writes = /(>|\btee\b|sed\s+-i|python3?\b|perl\s+-i|\bcp\b|\bmv\b|<<)/.test(cmd);
       const p = cmd.match(PLAN);
-      if (writes && p) plans.add(resolve(cwd, p[1]));
+      if (writes && p) plans.add(planPath(cwd, p[1]!));
       const hit = planned(cwd).find((f) => f.file && cmd.includes(basename(f.file)));
       if (writes && hit && !p) return { block: true, reason: `Gate 3: that command writes to a planned figure file (${basename(hit.file)}). Little Bros build figures; Main Guy delegates.` };
     }
@@ -121,7 +128,7 @@ export default function gates(pi: ExtensionAPI) {
     const open = planned(ctx.cwd).filter((f) => {
       if (!f.file) return false;
       const stub = !existsSync(f.abs) || isStub(readFileSync(f.abs, "utf8"));
-      return !reviewed.has(f.plan) || !delegated.has(basename(f.file)) || stub;
+      return !reviewed.has(f.plan) || (!kept(f) && !delegated.has(basename(f.file))) || stub;
     });
     if (!open.length) return undefined;
     nudges++;

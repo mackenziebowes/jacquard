@@ -680,3 +680,11 @@ Mackenzie, verbatim, 21:27, after reading the Jacquard post on the live site:
 > We have to sit down someday and figure out how to write better :3
 
 It passed prose-scrub (0.62/0.61) and still read badly. Passing the scrub didn't make it good writing.
+
+## 2026-10-09 21:57 PDT - runs 18-22, and a gate that locked itself
+
+One post per run, one site commit per run: 18 (small-business owners, 13 figures, $2.39, 29 min), 19 (EEAT and custom websites, 11 new + 1 restyled, $1.97, 24 min), 20 (the prose-scrub build log, 6 new + 1 restyled, $1.86, 21 min). Run 21 (what is Google EEAT) found the post fully illustrated by run 14 and stopped for $0.07, and noticed on its own that the post's stalls are outlined against style.md.
+
+Run 22 (vibe manufacturing) deadlocked. Main Guy wrote its plan with a bash heredoc from inside a figure folder, to `../../../../.jacquard/plans/…`. The gate resolved that against the project root, not the folder bash had cd'd into, and registered `/.jacquard/plans/…`, a file that can't exist. Gate 1 then refused every Big Bro request ("has no figures"), Gate 4 refused to let it finish, and Main Guy spent its three nudges explaining it was stuck. It diagnosed the bug correctly, read the gate's source, and tried `mkdir /.jacquard` and `sudo`, which failed. $0.35, 2 min, nothing built.
+
+Two fixes. Plan paths are now always the project's `.jacquard/plans/<file name>`, whatever path a command used, and a registered plan that never became a file is dropped instead of blocking. Gate 4 also counted figures the plan kept as unbuilt, so a plan can now mark one `- status: keep`, and post-figures says to.

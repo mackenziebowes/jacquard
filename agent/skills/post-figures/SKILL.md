@@ -33,7 +33,7 @@ The harness enforces this (Mackenzie, 2026-10-09 19:06: "*MUST* write a plan, th
 - **One world per post.** Pick a cast and a set for the whole post (the same people, the same machine, the same landscape) and let each section's figure be a different scene in that world. A reader should feel they're watching one story, not flipping through clip art.
 - **Different scenes, not the same scene relabelled.** If two sections would get the same picture, they're probably one idea: give the figure to the section that carries it, and say so for the other.
 - **Skip what has nothing to explain**: source lists, a closing line, a section that only lists links. Say which you skipped and why.
-- **Keep what works.** If the post already has figures, check them against the plan. Keep the ones that fit, and only replace one if the plan clearly needs something else.
+- **Keep what works.** If the post already has figures, check them against the plan. Keep the ones that fit, and only replace one if the plan clearly needs something else. A figure you keep still gets its `## ` section, with `- status: keep`, so nobody rebuilds it.
 
 ## Roles
 
